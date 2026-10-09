@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPAC - Hệ Thống Giám Sát Trạm Bê Tông Nhựa Từ Xa</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              900: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+          <i class="fa-solid fa-industry text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            BPAC MONITOR
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              Live Cloud
+            </span>
+          </h1>
+          <p class="text-xs text-slate-400 hidden sm:block">Hệ thống đồng bộ & giám sát trạm trộn bê tông nhựa từ xa</p>
+        </div>
+      </div>
+
+      <!-- Controls Right -->
+      <div class="flex items-center gap-2 sm:gap-4">
+        <!-- Live Countdown -->
+        <div class="text-xs text-slate-300 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-2">
+          <i class="fa-solid fa-rotate text-blue-400"></i>
+          <span>Cập nhật sau: <strong id="refreshTimer" class="text-white font-mono">30s</strong></span>
+          <button id="btnManualRefresh" title="Làm mới ngay" class="hover:text-blue-400 transition-colors ml-1">
+            <i class="fa-solid fa-arrow-rotate-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- Filters & Date Selector Bar -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 sm:p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <label for="selectDate" class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+          <i class="fa-regular fa-calendar-days text-blue-600 text-base"></i>
+          Chọn ngày sản xuất:
+        </label>
+        <select id="selectDate" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm font-medium rounded-xl focus:ring-blue-500 focus:border-blue-500 block px-4 py-2.5 shadow-sm transition">
+          <option value="">Đang tải danh sách ngày...</option>
+        </select>
+      </div>
+
+      <!-- Quick Search inside day -->
+      <div class="relative flex-1 max-w-md">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <input type="text" id="inputSearch" placeholder="Lọc theo giờ (ví dụ: 10h, 14h...)" class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:ring-blue-500 focus:border-blue-500">
+      </div>
+    </div>
+
+    <!-- KPI Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Card 1: Số chuyến / ca xe -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tổng ca xe xuất</p>
+          <h3 id="statTotalTrips" class="text-3xl font-black text-slate-800 mt-1">--</h3>
+          <p class="text-xs text-slate-400 mt-1">Trong ngày được chọn</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shadow-inner">
+          <i class="fa-solid fa-truck-front"></i>
+        </div>
+      </div>
+
+      <!-- Card 2: Chuyến mới nhất -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Chuyến gần nhất</p>
+          <h3 id="statLatestTrip" class="text-2xl font-black text-emerald-600 mt-1">--:--:--</h3>
+          <p class="text-xs text-slate-400 mt-1">Thời điểm xuất phiếu</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shadow-inner">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+      </div>
+
+      <!-- Card 3: Đồng bộ cuối -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Cập nhật lúc</p>
+          <h3 id="statLastSync" class="text-sm font-bold text-slate-700 mt-2">--</h3>
+          <p class="text-xs text-emerald-600 font-medium mt-1"><i class="fa-solid fa-circle-check"></i> Đã đồng bộ</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shadow-inner">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+      </div>
+
+      <!-- Card 4: Tình trạng kết nối -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Trạm kết nối</p>
+          <h3 class="text-base font-bold text-slate-800 mt-1">BPAC Trạm 01</h3>
+          <p class="text-xs text-emerald-600 font-medium mt-1"><i class="fa-solid fa-wifi"></i> Online (Silent Sync)</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl shadow-inner">
+          <i class="fa-solid fa-tower-broadcast"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Báo cáo tổng hợp Ngày & Xe -->
+    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 text-white rounded-2xl p-5 shadow-md">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-bold flex items-center gap-2">
+            <i class="fa-solid fa-file-invoice text-amber-400"></i>
+            Báo Cáo Tổng Hợp Trong Ngày
+          </h2>
+          <p class="text-xs text-slate-300 mt-1">Xem bảng tổng hợp sản lượng trạm trộn và thống kê khối lượng theo xe</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+          <!-- Báo cáo chi tiết ngày -->
+          <div class="flex items-center bg-white/10 backdrop-blur rounded-xl p-1.5 border border-white/15 gap-1.5 flex-1 md:flex-initial">
+            <span class="text-xs font-semibold text-slate-200 px-2">Tổng Ngày:</span>
+            <button id="btnViewDailyPDF" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition flex items-center gap-1 shadow-sm disabled:opacity-40 disabled:pointer-events-none">
+              <i class="fa-solid fa-file-pdf"></i> Xem PDF
+            </button>
+            <button id="btnDownloadDailyXLS" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center gap-1 shadow-sm disabled:opacity-40 disabled:pointer-events-none">
+              <i class="fa-solid fa-file-excel"></i> Tải Excel
+            </button>
+          </div>
+
+          <!-- Báo cáo chi tiết xe -->
+          <div class="flex items-center bg-white/10 backdrop-blur rounded-xl p-1.5 border border-white/15 gap-1.5 flex-1 md:flex-initial">
+            <span class="text-xs font-semibold text-slate-200 px-2">Chi Tiết Xe:</span>
+            <button id="btnViewVehiclesPDF" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition flex items-center gap-1 shadow-sm disabled:opacity-40 disabled:pointer-events-none">
+              <i class="fa-solid fa-file-pdf"></i> Xem PDF
+            </button>
+            <button id="btnDownloadVehiclesXLS" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center gap-1 shadow-sm disabled:opacity-40 disabled:pointer-events-none">
+              <i class="fa-solid fa-file-excel"></i> Tải Excel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danh Sách Các Phiếu Ca Xe Trong Ngày -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-blue-600"></i>
+            Danh Sách Phiếu Ca Xe Xuất Bến
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">Bấm "Xem Phiếu In" để đọc thông số mẻ trộn từ xa trên điện thoại</p>
+        </div>
+        <div id="tripBadgeCount" class="text-xs font-semibold bg-blue-50 text-blue-700 px-3 py-1 rounded-full border border-blue-200">
+          0 ca xe
+        </div>
+      </div>
+
+      <!-- Container Danh sách -->
+      <div id="tripsContainer" class="divide-y divide-slate-100">
+        <!-- Render bằng Javascript -->
+        <div class="p-10 text-center text-slate-400">
+          <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-blue-500"></i>
+          <p class="text-sm">Đang tải danh sách ca xe...</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    <p>© 2026 BPAC Asphalt Management System. Tự động đồng bộ từ trạm trộn <span class="font-semibold text-slate-700">D:\BPAC_2026RT\LuuDL_BPAC</span></p>
+  </footer>
+
+  <!-- Modal Viewer PDF (Xem trực tiếp phiếu in ngay trên điện thoại và máy tính) -->
+  <div id="pdfModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex flex-col hidden">
+    <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between border-b border-slate-700">
+      <div class="flex items-center gap-2 truncate pr-4">
+        <i class="fa-solid fa-file-pdf text-red-400 text-lg"></i>
+        <span id="modalPdfTitle" class="font-bold text-sm sm:text-base truncate">Phiếu In Ca Xe</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <a id="modalDownloadBtn" href="#" download class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+          <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Tải về</span>
+        </a>
+        <button id="btnCloseModal" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+    </div>
+    <div class="flex-1 bg-slate-800 relative">
+      <iframe id="pdfIframe" src="" class="w-full h-full border-0"></iframe>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
