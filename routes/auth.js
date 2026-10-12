@@ -33,7 +33,7 @@ router.post('/login', async (req, res) => {
         let user = null;
 
         // 1. Kiểm tra tài khoản admindemo trước (đảm bảo không bao giờ bị đơ)
-        if (username === 'admindemo' && (password === '123456' || password === '123456@')) {
+        if (username === 'admin' && (password === '123456' || password === '123456@')) {
             user = DEMO_USERS[0];
         } else {
             // 2. Thử tìm trong DB MariaDB (giới hạn chờ 2 giây để tránh treo web)
