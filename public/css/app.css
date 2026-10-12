@@ -1020,3 +1020,129 @@ html, body {
         font-size: 11px;
     }
 }
+
+/* ================= ĐIỀU CHỈNH CHỮ TO HƠN & BẢNG SẢN LƯỢNG KHÁCH HÀNG 3 CỘT (NHƯ H2) ================= */
+body {
+    font-size: 14px;
+}
+
+/* Tăng cỡ chữ Header */
+.plant-title {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+}
+.company-name {
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+}
+.company-address {
+    font-size: 12.5px !important;
+}
+
+/* Banner trang chủ */
+.home-banner-card h2 {
+    font-size: 21px !important;
+    font-weight: 700 !important;
+}
+.home-banner-card p {
+    font-size: 14px !important;
+}
+.filter-select {
+    font-size: 13.5px !important;
+}
+
+/* 4 Khối thống kê KPI trang chủ */
+.stat-label {
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+}
+.stat-number {
+    font-size: 30px !important;
+    font-weight: 800 !important;
+}
+.stat-sub {
+    font-size: 12.5px !important;
+}
+
+/* 5 Thẻ KPI (đã xóa Xi măng) */
+.kpi-six-cards {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 12px !important;
+}
+.kpi-title {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+.kpi-val {
+    font-size: 17.5px !important;
+    font-weight: 800 !important;
+}
+.kpi-sub-val {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+/* Bảng sản lượng khách hàng bên trái (3 cột vừa khít khung như H2, không cuộn ngang) */
+.home-tables-row {
+    grid-template-columns: 290px 1fr !important;
+    gap: 14px !important;
+}
+
+.table-box-customers {
+    overflow-x: hidden !important;
+    width: 100% !important;
+}
+
+.table-top-customers {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+}
+
+.table-top-customers th,
+.table-top-customers td {
+    white-space: normal !important;
+    padding: 8px 6px !important;
+    font-size: 13.5px !important;
+}
+
+.table-top-customers th:nth-child(1),
+.table-top-customers td:nth-child(1) {
+    width: 48px !important;
+    text-align: center !important;
+}
+
+.table-top-customers th:nth-child(2),
+.table-top-customers td:nth-child(2) {
+    text-align: left !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.table-top-customers th:nth-child(3),
+.table-top-customers td:nth-child(3) {
+    width: 68px !important;
+    text-align: right !important;
+}
+
+/* Chữ trong bảng dữ liệu chính */
+.table-card-header {
+    font-size: 15px !important;
+}
+.table-card-header .header-sub {
+    font-size: 12.5px !important;
+}
+.custom-data-table th {
+    font-size: 13.5px !important;
+    padding: 10px 8px !important;
+}
+.custom-data-table td {
+    font-size: 13.5px !important;
+    padding: 9px 8px !important;
+}
+
+/* Chân trang */
+.app-footer p {
+    font-size: 12.5px !important;
+}

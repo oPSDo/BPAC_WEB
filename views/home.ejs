@@ -79,8 +79,8 @@
                 </div>
                 <div class="header-sub">Cập nhật <%= currentTime %></div>
             </div>
-            <div class="table-responsive-box" style="border: none; border-radius: 0;">
-                <table class="custom-data-table">
+            <div class="table-responsive-box table-box-customers" style="border: none; border-radius: 0;">
+                <table class="custom-data-table table-top-customers">
                     <thead>
                         <tr>
                             <th style="width: 50px;">Hạng</th>
@@ -130,8 +130,6 @@
                             <th>MAC</th>
                             <th>M3XE</th>
                             <th>Cốt liệu</th>
-                            <th>Xi măng</th>
-                            <th>Nước</th>
                             <th>PG</th>
                             <th>Khối lượng</th>
                             <th>Tích lũy</th>
@@ -150,8 +148,6 @@
                                     <td><%= o.mac %></td>
                                     <td><%= o.m3xe %></td>
                                     <td><%= o.cot_lieu %></td>
-                                    <td><%= o.xi_mang %></td>
-                                    <td><%= o.nuoc %></td>
                                     <td><%= o.pg %></td>
                                     <td><%= o.khoi_luong %></td>
                                     <td><%= o.tich_luy %></td>
@@ -161,7 +157,7 @@
                             <% }) %>
                         <% } else { %>
                             <tr>
-                                <td colspan="14" class="empty-state">Không có đơn hàng phù hợp.</td>
+                                <td colspan="12" class="empty-state">Không có đơn hàng phù hợp.</td>
                             </tr>
                         <% } %>
                     </tbody>
