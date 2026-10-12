@@ -16,17 +16,7 @@ if not exist "%CSC%" (
     exit /b 1
 )
 
-echo [1/2] Dang bien dich BPAC.exe tu BPAC_Launcher.cs...
-"%CSC%" /target:winexe /optimize+ /out:..\BPAC.exe BPAC_Launcher.cs
-if %errorlevel% neq 0 (
-    echo [LOI] Bien dich BPAC.exe that bai!
-    pause
-    exit /b 1
-)
-echo      -^> Da tao thanh cong: BPAC_PC\BPAC.exe
-echo.
-
-echo [2/2] Dang bien dich autoupdate.exe tu AutoUpdateService.cs...
+echo [1/2] Dang bien dich autoupdate.exe tu AutoUpdateService.cs...
 "%CSC%" /target:winexe /optimize+ /out:..\autoupdate.exe AutoUpdateService.cs
 if %errorlevel% neq 0 (
     echo [LOI] Bien dich autoupdate.exe that bai!
@@ -36,9 +26,19 @@ if %errorlevel% neq 0 (
 echo      -^> Da tao thanh cong: BPAC_PC\autoupdate.exe
 echo.
 
+echo [2/2] Dang bien dich BPAC.exe (Tich hop co che Tu phuc hoi Self-Healing)...
+"%CSC%" /target:winexe /optimize+ /resource:..\autoupdate.exe,autoupdate.exe /out:..\BPAC.exe BPAC_Launcher.cs
+if %errorlevel% neq 0 (
+    echo [LOI] Bien dich BPAC.exe that bai!
+    pause
+    exit /b 1
+)
+echo      -^> Da tao thanh cong: BPAC_PC\BPAC.exe (Da nhung kem autoupdate.exe ben trong)
+echo.
+
 echo ============================================================
 echo   BIEN DICH HOAN TAT THANH CONG 100%!
-echo   Cac file .exe da duoc xuat tai thu muc: BPAC_PC\
+echo   BPAC.exe gio day co kha nang TU HOI SINH autoupdate.exe neu bi xoa!
 echo ============================================================
 echo.
 pause
