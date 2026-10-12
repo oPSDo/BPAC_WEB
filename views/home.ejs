@@ -18,6 +18,9 @@
                 <option>Tuần này</option>
                 <option>Tháng này</option>
             </select>
+            <button type="button" class="btn-reset-data" onclick="resetProductionData()" title="Xóa toàn bộ dữ liệu demo/cũ để chạy thật">
+                <i class="fa-solid fa-arrows-rotate"></i> Xóa dữ liệu cũ
+            </button>
         </div>
     </div>
 
@@ -115,12 +118,12 @@
                     <div class="header-sub">Đơn hàng trong ngày: <%= orders.length %> phiếu</div>
                 </div>
                 <div class="search-box-home">
-                    <input type="text" placeholder="Tìm SPX, tên khách...">
-                    <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                    <input type="text" id="searchHomeOrders" placeholder="Tìm SPX, tên khách..." onkeyup="filterHomeOrders()">
+                    <button onclick="filterHomeOrders()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
             </div>
             <div class="table-responsive-box" style="border: none; border-radius: 0;">
-                <table class="custom-data-table">
+                <table class="custom-data-table" id="tableHomeOrders">
                     <thead>
                         <tr>
                             <th>SPX</th>
@@ -157,7 +160,7 @@
                             <% }) %>
                         <% } else { %>
                             <tr>
-                                <td colspan="12" class="empty-state">Không có đơn hàng phù hợp.</td>
+                                <td colspan="12" class="empty-state">Không có đơn hàng phù hợp. Dữ liệu sẽ tự động xuất hiện khi trạm trộn sản xuất.</td>
                             </tr>
                         <% } %>
                     </tbody>
@@ -166,5 +169,40 @@
         </div>
     </div>
 </main>
+
+<script>
+    function filterHomeOrders() {
+        const val = document.getElementById('searchHomeOrders').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#tableHomeOrders tbody tr');
+        rows.forEach(r => {
+            if (r.querySelector('.empty-state')) return;
+            r.style.display = r.innerText.toLowerCase().includes(val) ? '' : 'none';
+        });
+    }
+
+    function resetProductionData() {
+        if (!confirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu sản xuất demo / cũ để bắt đầu chạy thật không?')) {
+            return;
+        }
+
+        fetch('/api/reset-data', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Đã xóa sạch dữ liệu demo thành công! Hệ thống sẵn sàng nhận dữ liệu thật.');
+                location.reload();
+            } else {
+                alert('Lỗi: ' + (data.message || 'Không thể xóa dữ liệu'));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Lỗi kết nối khi gửi yêu cầu xóa dữ liệu!');
+        });
+    }
+</script>
 
 <%- include('partials/footer') %>

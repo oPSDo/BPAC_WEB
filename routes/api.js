@@ -3,8 +3,8 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { parseCaXe, parseCTNgay } = require('../services/excelParser');
-const { addOrder, loadData } = require('../services/dataStore');
+const { parseCaXe, parseCTXe, parseCTNgay } = require('../services/excelParser');
+const { addOrder, loadData, resetData } = require('../services/dataStore');
 
 // Cấu hình lưu trữ file upload
 const storage = multer.diskStorage({
@@ -59,17 +59,26 @@ router.post('/upload', verifyApiKey, upload.single('file'), (req, res) => {
         console.log(`📥 Nhận file từ trạm: ${fileName} (${req.file.size} bytes)`);
 
         let parseResult = null;
+        const lowerName = fileName.toLowerCase();
 
-        // Nếu là file chuyến xe Ghi_CaXe_...xls
-        if (fileName.toLowerCase().startsWith('ghi_caxe_') && fileName.toLowerCase().endsWith('.xls')) {
+        // 1. File chuyến xe Ghi_CaXe_...xls
+        if (lowerName.startsWith('ghi_caxe_') && lowerName.endsWith('.xls')) {
             parseResult = parseCaXe(filePath);
             if (parseResult) {
                 addOrder(parseResult);
                 console.log(`✅ Đã bóc tách thành công phiếu: ${parseResult.spx} - Khách: ${parseResult.ten_kh} (${parseResult.m3xe} m³)`);
             }
         }
-        // Nếu là file tổng hợp Ghi_CT Ngày_...xls
-        else if (fileName.toLowerCase().startsWith('ghi_ct ngày_') && fileName.toLowerCase().endsWith('.xls')) {
+        // 2. File chi tiết xe Ghi_CTXe_...xls
+        else if (lowerName.startsWith('ghi_ctxe_') && lowerName.endsWith('.xls')) {
+            parseResult = parseCTXe(filePath);
+            if (parseResult) {
+                addOrder(parseResult);
+                console.log(`✅ Đã bóc tách thành công phiếu CTXe: ${parseResult.spx} - Biển số: ${parseResult.bien_so} (${parseResult.m3xe} m³)`);
+            }
+        }
+        // 3. File tổng hợp Ghi_CT Ngày_...xls
+        else if (lowerName.includes('ghi_ct') && lowerName.endsWith('.xls')) {
             const ctResult = parseCTNgay(filePath);
             console.log(`📊 Đã nhận file tổng kết ngày: ${JSON.stringify(ctResult)}`);
         }
@@ -96,6 +105,20 @@ router.get('/status', (req, res) => {
         totalOrders: data.orders.length,
         lastUpdated: data.lastUpdated
     });
+});
+
+// ==================== RESET DỮ LIỆU SẢN XUẤT ====================
+// Xóa sạch toàn bộ dữ liệu demo / cũ để chạy thật
+router.all('/reset-data', (req, res) => {
+    const emptyData = resetData();
+    if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        return res.json({
+            success: true,
+            message: 'Đã xóa toàn bộ dữ liệu sản xuất demo thành công! Sẵn sàng nhận dữ liệu thật.',
+            data: emptyData
+        });
+    }
+    res.redirect('/home');
 });
 
 module.exports = router;

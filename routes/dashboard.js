@@ -2,18 +2,41 @@ const express = require('express');
 const router = express.Router();
 const { requireLogin } = require('../middleware/auth');
 
-// DỮ LIỆU MẪU CHUẨN THEO ẢNH GIAO DIỆN CỦA ANH
-const KPI_DEFAULT = {
-    nam_m3: '10.487,8',
-    nam_kg: '11.531.643,4',
-    thang_m3: '0',
-    thang_kg: '0',
-    ngay_m3: '0',
-    ngay_kg: '0',
-    tong_vat_lieu: '8.451.495,0',
-    tong_xi_mang: '2.162.653,0',
-    tong_phu_gia: '68.887,4'
-};
+// TÍNH TOÁN KPI THỰC TẾ THEO DỮ LIỆU SẢN XUẤT (KHÔNG DÙNG SỐ DEMO)
+function getLiveKpi() {
+    const { loadData } = require('../services/dataStore');
+    const liveData = loadData();
+    const orders = liveData.orders || [];
+
+    let totalM3 = 0;
+    let totalKg = 0;
+    let tongVatLieu = 0;
+    let tongPhuGia = 0;
+
+    orders.forEach(o => {
+        totalM3 += (o.m3_raw || 0);
+        totalKg += (o.kg_raw || 0);
+        const cl = parseFloat(String(o.cot_lieu || 0).replace(/\./g, '').replace(',', '.')) || 0;
+        const pg = parseFloat(String(o.pg || 0).replace(/\./g, '').replace(',', '.')) || 0;
+        tongVatLieu += cl;
+        tongPhuGia += pg;
+    });
+
+    const m3Str = totalM3 > 0 ? totalM3.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '0,0';
+    const kgStr = totalKg > 0 ? totalKg.toLocaleString('vi-VN') : '0';
+
+    return {
+        nam_m3: m3Str,
+        nam_kg: kgStr,
+        thang_m3: m3Str,
+        thang_kg: kgStr,
+        ngay_m3: m3Str,
+        ngay_kg: kgStr,
+        tong_vat_lieu: tongVatLieu > 0 ? tongVatLieu.toLocaleString('vi-VN') : '0',
+        tong_xi_mang: '0',
+        tong_phu_gia: tongPhuGia > 0 ? tongPhuGia.toLocaleString('vi-VN') : '0'
+    };
+}
 
 const {
     loadData,
@@ -66,7 +89,7 @@ router.get('/macs', requireLogin, (req, res) => {
     res.render('macs', {
         title: 'Công thức trộn - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/macs',
-        kpi: KPI_DEFAULT,
+        kpi: getLiveKpi(),
         macs: getMacs()
     });
 });
@@ -116,7 +139,7 @@ router.get('/customers', requireLogin, (req, res) => {
     res.render('customers', {
         title: 'Thông tin khách hàng - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/customers',
-        kpi: KPI_DEFAULT,
+        kpi: getLiveKpi(),
         customers: getCustomers()
     });
 });
@@ -166,7 +189,7 @@ router.get('/vehicles', requireLogin, (req, res) => {
     res.render('vehicles', {
         title: 'Thông tin xe - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/vehicles',
-        kpi: KPI_DEFAULT,
+        kpi: getLiveKpi(),
         vehicles: getVehicles()
     });
 });
@@ -217,7 +240,7 @@ router.get('/customer-data', requireLogin, (req, res) => {
         title: 'Dữ liệu theo khách hàng - Trạm Trộn Asphalt ENQ 01',
         pageTitle: 'DỮ LIỆU THEO KHÁCH HÀNG',
         currentPath: '/customer-data',
-        kpi: KPI_DEFAULT
+        kpi: getLiveKpi()
     });
 });
 
@@ -227,43 +250,41 @@ router.get('/vehicle-data', requireLogin, (req, res) => {
         title: 'Dữ liệu theo xe - Trạm Trộn Asphalt ENQ 01',
         pageTitle: 'DỮ LIỆU THEO XE',
         currentPath: '/vehicle-data',
-        kpi: KPI_DEFAULT
+        kpi: getLiveKpi()
     });
 });
 
-const PHIEUS_DEFAULT = [
-    { spx: '4311', ngay: '2026-08-04', gio: '16:00:06', ten_kh: 'Phạm Bá Toàn', mac: '250CDC', m3xe: 3.00, khoi_luong: '6145.00', bien_so: '89A-095.14' },
-    { spx: '4310', ngay: '2026-08-04', gio: '15:56:16', ten_kh: 'Phạm Bá Toàn', mac: '250CDC', m3xe: 10.00, khoi_luong: '14064.00', bien_so: '89A-095.14' },
-    { spx: '4309', ngay: '2026-08-04', gio: '15:46:13', ten_kh: 'Phạm Bá Toàn', mac: '250CDC', m3xe: 10.00, khoi_luong: '14064.00', bien_so: '89A-095.14' },
-    { spx: '4308', ngay: '2026-07-28', gio: '20:29:08', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 10.50, khoi_luong: '4853.75', bien_so: '89A-304.63' },
-    { spx: '4307', ngay: '2026-07-28', gio: '20:24:44', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' },
-    { spx: '4306', ngay: '2026-07-28', gio: '20:09:54', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' },
-    { spx: '4305', ngay: '2026-07-28', gio: '19:55:04', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' },
-    { spx: '4304', ngay: '2026-07-28', gio: '19:40:12', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' },
-    { spx: '4303', ngay: '2026-07-28', gio: '19:25:22', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' }
-];
-
 function handlePhieusRoute(req, res) {
     const liveData = loadData();
-    const liveOrders = (liveData.orders || []).map(o => ({
-        spx: o.spx || '0000',
-        ngay: o.thoi_gian ? o.thoi_gian.split(' ')[1] : new Date().toISOString().split('T')[0],
-        gio: o.thoi_gian ? o.thoi_gian.split(' ')[2] : '',
-        ten_kh: o.ten_kh || 'Khách hàng Trạm ENQ',
-        mac: o.mac || 'MAC250',
-        m3xe: parseFloat(o.m3xe || 0),
-        khoi_luong: o.khoi_luong || '0.00',
-        bien_so: o.bien_so || '89A-000.00'
-    }));
-
-    // Gộp live orders lên đầu, tiếp đến danh sách mặc định
-    const combinedPhieus = [...liveOrders, ...PHIEUS_DEFAULT];
+    const liveOrders = (liveData.orders || []).map(o => {
+        let ngay = '';
+        let gio = '';
+        if (o.thoi_gian) {
+            const parts = o.thoi_gian.split(' ');
+            if (parts.length >= 3) {
+                ngay = parts[1] || '';
+                gio = parts[2] || '';
+            } else {
+                ngay = o.thoi_gian;
+            }
+        }
+        return {
+            spx: o.spx || '0000',
+            ngay: ngay,
+            gio: gio,
+            ten_kh: o.ten_kh || 'Khách lẻ',
+            mac: o.mac || '',
+            m3xe: parseFloat(o.m3xe || 0),
+            khoi_luong: o.khoi_luong || '0.00',
+            bien_so: o.bien_so || ''
+        };
+    });
 
     res.render('phieus', {
         title: 'Báo cáo theo phiếu - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/phieus',
-        kpi: KPI_DEFAULT,
-        phieus: combinedPhieus
+        kpi: getLiveKpi(),
+        phieus: liveOrders
     });
 }
 
@@ -276,7 +297,7 @@ router.get('/users', requireLogin, (req, res) => {
     res.render('users', {
         title: 'Quản lý người dùng - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/users',
-        kpi: KPI_DEFAULT
+        kpi: getLiveKpi()
     });
 });
 

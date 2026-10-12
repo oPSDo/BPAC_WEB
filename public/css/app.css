@@ -326,6 +326,26 @@ body {
     background-color: #218838;
 }
 
+.btn-reset-data {
+    background-color: #dc3545;
+    color: #ffffff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+    height: 35px;
+}
+
+.btn-reset-data:hover {
+    background-color: #bb2d3b;
+}
+
 .search-input-group {
     display: flex;
     align-items: center;

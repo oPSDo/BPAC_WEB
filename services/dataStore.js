@@ -310,7 +310,7 @@ function addOrder(orderData) {
         totalKg += kg;
         totalM3 += m3;
 
-        const custName = o.ten_kh || 'Khách hàng FUTA';
+        const custName = o.ten_kh && o.ten_kh.trim() ? o.ten_kh.trim() : 'Khách lẻ';
         customerMap[custName] = (customerMap[custName] || 0) + m3;
     });
 
@@ -332,9 +332,26 @@ function addOrder(orderData) {
     return data;
 }
 
+function resetData() {
+    const emptyData = {
+        stats: {
+            orders_count: 0,
+            customers_count: 0,
+            total_m3: '0,0',
+            total_kg: '0,0'
+        },
+        orders: [],
+        topCustomers: [],
+        lastUpdated: new Date().toLocaleTimeString('vi-VN')
+    };
+    saveData(emptyData);
+    return emptyData;
+}
+
 module.exports = {
     loadData,
     saveData,
+    resetData,
     addOrder,
     getMacs,
     getMacById,
