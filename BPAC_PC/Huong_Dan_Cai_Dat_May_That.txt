@@ -1,0 +1,35 @@
+========================================================================================
+         HƯỚNG DẪN CÀI ĐẶT & VẬN HÀNH TRÊN MÁY TRẠM THẬT (BPAC)
+========================================================================================
+
+CÁC BƯỚC THỰC HIỆN TRÊN MÁY TRẠM:
+
+1. GIẢI NÉN VÀ COPY VÀO MÁY TRẠM:
+   - Copy tất cả các file trong gói này vào thư mục chương trình trạm:
+     👉 Thư mục chuẩn: D:\BPAC_2026RT\
+   - Đảm bảo trong thư mục D:\BPAC_2026RT\ có:
+     + BPAC.exe
+     + autoupdate.exe
+     + autoupdate_config.json
+     + File chương trình Siemens: pdata.fwc
+     + Thư mục lưu dữ liệu: LuuDL_BPAC
+
+2. TẠO SHORTCUT RA DESKTOP (TÙY CHỌN):
+   - Nhấp đúp vào file "Tao_Shortcut_Desktop.bat" để tạo biểu tượng "BPAC Tram Tron"
+     ngay trên màn hình Desktop cho thợ trạm dễ bấm.
+
+3. VẬN HÀNH:
+   - Thợ trạm chỉ cần nhấp đúp vào biểu tượng "BPAC.exe" (hoặc shortcut ngoài Desktop).
+   - Chương trình sẽ:
+     + Tự động mở giao diện điều khiển Siemens (pdata.fwc).
+     + Tự động kích hoạt ngầm autoupdate.exe ở chế độ Silent (hoàn toàn ẩn).
+   - Mỗi khi trạm trộn xong và xuất phiếu:
+     + Nếu máy trạm có mạng Internet (Wi-Fi, dây LAN hoặc 4G), dữ liệu sẽ lập tức được
+       tự động đẩy lên Web: https://tram-tron-net.onrender.com
+     + Nếu mất mạng, hệ thống sẽ đợi và tự động bù dữ liệu ngay khi có mạng trở lại.
+
+4. XEM DỮ LIỆU TỪ XA:
+   - Bất kỳ ai (Lãnh đạo, Kế toán, Kỹ thuật) chỉ cần mở điện thoại hoặc máy tính truy cập:
+     👉 https://tram-tron-net.onrender.com/
+   - Xem trực tiếp Phiếu in mẻ trộn (PDF) và tải file Excel (.xls) theo từng ngày.
+========================================================================================

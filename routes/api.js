@@ -40,6 +40,12 @@ function verifyApiKey(req, res, next) {
     next();
 }
 
+// ==================== GET /api/ping ====================
+// Health check cho autoupdate.exe kiem tra ket noi
+router.get('/ping', (req, res) => {
+    res.json({ status: 'ok', serverTime: new Date().toISOString() });
+});
+
 // ==================== POST /api/upload ====================
 // Nhận file tự động từ autoupdate.exe trên máy trạm Siemens
 router.post('/upload', verifyApiKey, upload.single('file'), (req, res) => {
