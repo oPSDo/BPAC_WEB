@@ -9,39 +9,39 @@ const VEHICLES_FILE = path.join(__dirname, '..', 'data', 'vehicles.json');
 // Dữ liệu mặc định ban đầu
 const MACS_DEFAULT = [
     {
-        id: '1', stt: 1, ten_mac: 'MAC01',
-        cl1: '200.00', cl2: '200.00', cl3: '200.00', cl4: '300.00', cl5: '300.00',
-        pg1: '14.60', pg2: '9.90', ten_pg1: 'PGG1', ten_pg2: 'PGG2',
-        ten_cl1: 'Cát vàng', ten_cl2: 'cát đen', ten_cl3: 'sỏi', ten_cl4: 'đá 22', ten_cl5: 'đá 21',
-        do_sut: '15.00'
+        id: '1', stt: 1, ten_mac: 'C14',
+        cl1: '480.00', cl2: '330.00', cl3: '260.00', cl4: '115.00', cl5: '55.00',
+        pg1: '42.00', pg2: '27.50', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        ten_cl1: 'Đá 10-20', ten_cl2: 'Đá 5-10', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát hạt mịn',
+        do_sut: '160°C'
     },
     {
-        id: '2', stt: 2, ten_mac: 'MAC02',
-        cl1: '250.00', cl2: '300.00', cl3: '450.00', cl4: '160.00', cl5: '90.00',
-        pg1: '5.50', pg2: '9.90', ten_pg1: 'PG1', ten_pg2: 'PG2',
-        ten_cl1: 'Đá 21', ten_cl2: 'đá 22', ten_cl3: 'cát sông', ten_cl4: 'cat đen', ten_cl5: 'cat vang',
-        do_sut: '10.50'
+        id: '2', stt: 2, ten_mac: 'MAC_C19',
+        cl1: '520.00', cl2: '300.00', cl3: '240.00', cl4: '120.00', cl5: '50.00',
+        pg1: '38.00', pg2: '25.00', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        ten_cl1: 'Đá 10-20', ten_cl2: 'Đá 5-10', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát hạt mịn',
+        do_sut: '165°C'
     },
     {
-        id: '3', stt: 3, ten_mac: 'MAC03',
-        cl1: '205.00', cl2: '300.00', cl3: '450.00', cl4: '160.00', cl5: '90.00',
-        pg1: '5.50', pg2: '9.90', ten_pg1: 'PG1', ten_pg2: 'PG2',
-        ten_cl1: 'Đá 21', ten_cl2: 'đá 22', ten_cl3: 'cát sông', ten_cl4: 'cat đen', ten_cl5: 'cat vang',
-        do_sut: '10.50'
+        id: '3', stt: 3, ten_mac: 'BTNC 12.5',
+        cl1: '470.00', cl2: '340.00', cl3: '270.00', cl4: '110.00', cl5: '50.00',
+        pg1: '45.00', pg2: '28.00', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        ten_cl1: 'Đá 10-20', ten_cl2: 'Đá 5-10', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát hạt mịn',
+        do_sut: '160°C'
     },
     {
-        id: '1002', stt: 1002, ten_mac: 'MAC04',
-        cl1: '150.00', cl2: '250.00', cl3: '350.00', cl4: '450.00', cl5: '550.00',
-        pg1: '15.50', pg2: '25.50', ten_pg1: 'PG1', ten_pg2: 'PG2',
-        ten_cl1: 'Cát1', ten_cl2: 'Cát2', ten_cl3: 'Cát3', ten_cl4: 'Đá1', ten_cl5: 'Đá2',
-        do_sut: '0.00'
+        id: '4', stt: 4, ten_mac: 'BTNC 9.5',
+        cl1: '350.00', cl2: '420.00', cl3: '280.00', cl4: '130.00', cl5: '60.00',
+        pg1: '48.00', pg2: '30.00', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        ten_cl1: 'Đá 5-10', ten_cl2: 'Đá 3-8', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát mịn',
+        do_sut: '160°C'
     },
     {
-        id: '1003', stt: 1003, ten_mac: 'MAC05',
-        cl1: '150.00', cl2: '250.00', cl3: '350.00', cl4: '450.00', cl5: '550.00',
-        pg1: '15.50', pg2: '25.50', ten_pg1: 'PG1', ten_pg2: 'PG2',
-        ten_cl1: 'Cát1', ten_cl2: 'Cát2', ten_cl3: 'Cát3', ten_cl4: 'Đá1', ten_cl5: 'Đá2',
-        do_sut: '10.00'
+        id: '5', stt: 5, ten_mac: 'BTNR 19',
+        cl1: '580.00', cl2: '280.00', cl3: '220.00', cl4: '100.00', cl5: '40.00',
+        pg1: '30.00', pg2: '20.00', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        ten_cl1: 'Đá 10-20', ten_cl2: 'Đá 5-10', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát hạt mịn',
+        do_sut: '155°C'
     }
 ];
 

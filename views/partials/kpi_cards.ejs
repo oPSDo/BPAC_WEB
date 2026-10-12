@@ -10,15 +10,15 @@
         <div class="kpi-mini-card">
             <div class="kpi-title">Tích lũy năm</div>
             <div class="kpi-body">
-                <div class="kpi-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.nam_m3 : '10.487,8' %> m³</div>
-                <div class="kpi-sub-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.nam_kg : '11.531.643,4' %> Kg</div>
+                <div class="kpi-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.nam_m3 : '0,0' %> m³</div>
+                <div class="kpi-sub-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.nam_kg : '0' %> Kg</div>
             </div>
         </div>
 
         <div class="kpi-mini-card">
             <div class="kpi-title">Tích lũy tháng</div>
             <div class="kpi-body">
-                <div class="kpi-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.thang_m3 : '0' %> m³</div>
+                <div class="kpi-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.thang_m3 : '0,0' %> m³</div>
                 <div class="kpi-sub-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.thang_kg : '0' %> Kg</div>
             </div>
         </div>
@@ -26,22 +26,22 @@
         <div class="kpi-mini-card">
             <div class="kpi-title">Tích lũy ngày</div>
             <div class="kpi-body">
-                <div class="kpi-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.ngay_m3 : '0' %> m³</div>
+                <div class="kpi-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.ngay_m3 : '0,0' %> m³</div>
                 <div class="kpi-sub-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.ngay_kg : '0' %> Kg</div>
             </div>
         </div>
 
         <div class="kpi-mini-card">
-            <div class="kpi-title">Tổng vật liệu</div>
+            <div class="kpi-title">Tổng cốt liệu</div>
             <div class="kpi-body kpi-body-bottom">
-                <div class="kpi-sub-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.tong_vat_lieu : '8.451.495,0' %> Kg</div>
+                <div class="kpi-sub-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.tong_vat_lieu : '0' %> Kg</div>
             </div>
         </div>
 
         <div class="kpi-mini-card">
-            <div class="kpi-title">Tổng phụ gia</div>
+            <div class="kpi-title">Tổng phụ gia & bột đá</div>
             <div class="kpi-body kpi-body-bottom">
-                <div class="kpi-sub-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.tong_phu_gia : '68.887,4' %> Kg</div>
+                <div class="kpi-sub-val blue-text"><%= typeof kpi !== 'undefined' ? kpi.tong_phu_gia : '0' %> Kg</div>
             </div>
         </div>
     </div>

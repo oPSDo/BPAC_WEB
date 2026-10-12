@@ -10,15 +10,18 @@ function getLiveKpi() {
 
     let totalM3 = 0;
     let totalKg = 0;
-    let tongVatLieu = 0;
+    let tongCotLieu = 0;
+    let tongNhua = 0;
     let tongPhuGia = 0;
 
     orders.forEach(o => {
         totalM3 += (o.m3_raw || 0);
         totalKg += (o.kg_raw || 0);
         const cl = parseFloat(String(o.cot_lieu || 0).replace(/\./g, '').replace(',', '.')) || 0;
+        const nhua = parseFloat(String(o.nhua || 0).replace(/\./g, '').replace(',', '.')) || 0;
         const pg = parseFloat(String(o.pg || 0).replace(/\./g, '').replace(',', '.')) || 0;
-        tongVatLieu += cl;
+        tongCotLieu += cl;
+        tongNhua += nhua;
         tongPhuGia += pg;
     });
 
@@ -32,8 +35,8 @@ function getLiveKpi() {
         thang_kg: kgStr,
         ngay_m3: m3Str,
         ngay_kg: kgStr,
-        tong_vat_lieu: tongVatLieu > 0 ? tongVatLieu.toLocaleString('vi-VN') : '0',
-        tong_xi_mang: '0',
+        tong_vat_lieu: tongCotLieu > 0 ? tongCotLieu.toLocaleString('vi-VN') : '0',
+        tong_nhua: tongNhua > 0 ? tongNhua.toLocaleString('vi-VN') : '0',
         tong_phu_gia: tongPhuGia > 0 ? tongPhuGia.toLocaleString('vi-VN') : '0'
     };
 }
