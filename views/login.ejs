@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Đăng Nhập</h2>
+
+        <% if (error && error.length > 0) { %>
+            <p class="error"><%= error[0] %></p>
+        <% } %>
+
+        <form action="/auth/login" method="POST">
+            <input type="text" name="username" placeholder="Tên đăng nhập" required autocomplete="username">
+            <input type="password" name="password" placeholder="Mật khẩu" required autocomplete="current-password">
+
+            <label class="remember-row">
+                <input type="checkbox" name="remember" value="1">
+                Ghi nhớ đăng nhập
+            </label>
+
+            <button type="submit">Đăng nhập</button>
+        </form>
+
+        <a href="#" id="forgotPasswordLink">Quên mật khẩu?</a>
+        <div id="forgotPasswordBox" class="forgot-box" style="display:none;">
+            Vui lòng liên hệ <strong>Quản trị viên (Admin)</strong> của trạm để được hỗ trợ đặt lại mật khẩu.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('forgotPasswordLink').addEventListener('click', function (e) {
+            e.preventDefault();
+            const box = document.getElementById('forgotPasswordBox');
+            box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        });
+    </script>
+</body>
+</html>

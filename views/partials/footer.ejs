@@ -1,0 +1,31 @@
+    <footer class="app-footer">
+        <p>&copy; 2026 Công Ty ABC XYZ. Mọi quyền được bảo lưu.</p>
+    </footer>
+
+    <script>
+        // Điều khiển Sidebar Drawer
+        const openBtn = document.getElementById('openSidebarBtn');
+        const closeBtn = document.getElementById('closeSidebarBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            if (sidebar && overlay) {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+
+        function closeSidebar() {
+            if (sidebar && overlay) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            }
+        }
+
+        if (openBtn) openBtn.addEventListener('click', openSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+        if (overlay) overlay.addEventListener('click', closeSidebar);
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Trạm trộn FUTA01' %></title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- OVERLAY KHI MỞ SIDEBAR -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <!-- SIDEBAR DRAWER -->
+    <aside id="sidebar" class="sidebar-drawer">
+        <div class="sidebar-header">
+            <button id="closeSidebarBtn" class="close-btn" title="Đóng menu">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/home" class="nav-item <%= currentPath === '/home' ? 'active' : '' %>">
+                <i class="fa-solid fa-house"></i>
+                <span>Trang chính</span>
+            </a>
+            <a href="/macs" class="nav-item <%= currentPath === '/macs' ? 'active' : '' %>">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Công thức</span>
+            </a>
+            <a href="/customers" class="nav-item <%= currentPath === '/customers' ? 'active' : '' %>">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Khách hàng</span>
+            </a>
+            <a href="/vehicles" class="nav-item <%= currentPath === '/vehicles' ? 'active' : '' %>">
+                <i class="fa-solid fa-truck"></i>
+                <span>Xe</span>
+            </a>
+            <a href="/customer-data" class="nav-item <%= currentPath === '/customer-data' ? 'active' : '' %>">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dữ liệu theo khách hàng</span>
+            </a>
+            <a href="/vehicle-data" class="nav-item <%= currentPath === '/vehicle-data' ? 'active' : '' %>">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dữ liệu theo xe</span>
+            </a>
+            <a href="/reports" class="nav-item <%= currentPath === '/reports' ? 'active' : '' %>">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Báo cáo theo phiếu</span>
+            </a>
+            <a href="/users" class="nav-item <%= currentPath === '/users' ? 'active' : '' %>">
+                <i class="fa-solid fa-user"></i>
+                <span>Người dùng</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-greeting">
+                Chào, <strong><%= typeof user !== 'undefined' && user ? user.username : 'admindemo' %></strong>!
+            </div>
+            <a href="/auth/logout" class="btn-logout">Đăng xuất</a>
+        </div>
+    </aside>
+
+    <!-- TOP HEADER -->
+    <header class="top-header">
+        <button id="openSidebarBtn" class="hamburger-btn" title="Mở menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="company-header-info">
+            <h1 class="plant-title">Trạm trộn FUTA01</h1>
+            <div class="company-name">Công ty XAY DUNG FUTA01</div>
+            <div class="company-address">Địa chỉ: 3001, Thành phố 3001, Tỉnh 3001</div>
+        </div>
+        <div class="header-right-placeholder"></div>
+    </header>

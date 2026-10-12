@@ -1,0 +1,39 @@
+<%- include('partials/header') %>
+
+<main class="main-wrapper">
+    <%- include('partials/kpi_cards') %>
+
+    <h2 class="section-main-heading"><%= pageTitle %></h2>
+
+    <div class="table-action-bar">
+        <div class="search-input-group">
+            <input type="text" placeholder="Tìm kiếm dữ liệu...">
+            <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div class="table-responsive-box">
+        <table class="custom-data-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Thời gian</th>
+                    <th>Mã phiếu</th>
+                    <th>Khách hàng</th>
+                    <th>Xe vận chuyển</th>
+                    <th>Mác bê tông</th>
+                    <th>Thể tích (m³)</th>
+                    <th>Khối lượng (Kg)</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="9" class="empty-state">Dữ liệu đang được đồng bộ từ trạm trộn...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

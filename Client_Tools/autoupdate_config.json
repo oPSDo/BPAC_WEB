@@ -1,0 +1,7 @@
+﻿{
+    "StationName":  "Trạm trộn FUTA01",
+    "DataDir":  "D:\\BPAC_2026RT\\LuuDL_BPAC",
+    "IntervalSeconds":  15,
+    "ServerUrl":  "https://tramtron.bot-keep.xyz",
+    "ApiKey":  "BPAC_SECRET_KEY_2026"
+}

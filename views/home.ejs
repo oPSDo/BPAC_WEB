@@ -1,0 +1,174 @@
+<%- include('partials/header') %>
+
+<main class="main-wrapper">
+    <!-- BANNER BÁO CÁO SẢN XUẤT TRONG NGÀY -->
+    <div class="home-banner-card">
+        <div class="banner-left">
+            <h2>Báo cáo sản xuất trong ngày</h2>
+            <p>Theo dõi đơn hàng, khách hàng và sản lượng hôm nay của <strong>Trạm trộn FUTA01</strong></p>
+        </div>
+        <div class="banner-right-filters">
+            <select class="filter-select">
+                <option selected>Trạm trộn FUTA01</option>
+                <option>Trạm trộn FUTA02</option>
+            </select>
+            <select class="filter-select">
+                <option selected>Hôm nay</option>
+                <option>Hôm qua</option>
+                <option>Tuần này</option>
+                <option>Tháng này</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 4 KHỐI THỐNG KÊ (KPI) TRONG NGÀY -->
+    <div class="home-stats-grid">
+        <div class="home-stat-card">
+            <div class="stat-content">
+                <div class="stat-label">Số đơn hàng trong ngày</div>
+                <div class="stat-number"><%= stats.orders_count %></div>
+                <div class="stat-sub">Phiếu trộn hôm nay</div>
+            </div>
+            <div class="stat-icon-badge">
+                <i class="fa-regular fa-file-lines"></i>
+            </div>
+        </div>
+
+        <div class="home-stat-card">
+            <div class="stat-content">
+                <div class="stat-label">Số khách hàng trong ngày</div>
+                <div class="stat-number"><%= stats.customers_count %></div>
+                <div class="stat-sub">Khách có phát sinh đơn</div>
+            </div>
+            <div class="stat-icon-badge">
+                <i class="fa-solid fa-user-group"></i>
+            </div>
+        </div>
+
+        <div class="home-stat-card">
+            <div class="stat-content">
+                <div class="stat-label">Số M3 đã trộn trong ngày</div>
+                <div class="stat-number"><%= stats.total_m3 %> m³</div>
+                <div class="stat-sub">Tổng thể tích bê tông đã trộn</div>
+            </div>
+            <div class="stat-icon-badge">
+                <i class="fa-solid fa-droplet"></i>
+            </div>
+        </div>
+
+        <div class="home-stat-card">
+            <div class="stat-content">
+                <div class="stat-label">Tổng sản lượng trong ngày</div>
+                <div class="stat-number"><%= stats.total_kg %> Kg</div>
+                <div class="stat-sub">Tổng khối lượng theo khách hàng</div>
+            </div>
+            <div class="stat-icon-badge">
+                <i class="fa-solid fa-chart-simple"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2 BẢNG THỐNG KÊ CHI TIẾT -->
+    <div class="home-tables-row">
+        <!-- BẢNG BÊN TRÁI: SẢN LƯỢNG KHÁCH HÀNG -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <div>
+                    Sản lượng khách hàng
+                    <div class="header-sub">Cao đến thấp</div>
+                </div>
+                <div class="header-sub">Cập nhật <%= currentTime %></div>
+            </div>
+            <div class="table-responsive-box" style="border: none; border-radius: 0;">
+                <table class="custom-data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">Hạng</th>
+                            <th>Khách hàng</th>
+                            <th style="width: 80px;">M3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (topCustomers && topCustomers.length > 0) { %>
+                            <% topCustomers.forEach((item, index) => { %>
+                                <tr>
+                                    <td><%= index + 1 %></td>
+                                    <td><%= item.name %></td>
+                                    <td><%= item.m3 %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="3" class="empty-state">Hôm nay chưa có dữ liệu.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- BẢNG BÊN PHẢI: ĐƠN HÀNG MỚI NHẤT -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <div>
+                    Đơn hàng mới nhất
+                    <div class="header-sub">Đơn hàng trong ngày: <%= orders.length %> phiếu</div>
+                </div>
+                <div class="search-box-home">
+                    <input type="text" placeholder="Tìm SPX, tên khách...">
+                    <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                </div>
+            </div>
+            <div class="table-responsive-box" style="border: none; border-radius: 0;">
+                <table class="custom-data-table">
+                    <thead>
+                        <tr>
+                            <th>SPX</th>
+                            <th>Mã KH</th>
+                            <th>Tên khách hàng</th>
+                            <th>Thời gian</th>
+                            <th>MAC</th>
+                            <th>M3XE</th>
+                            <th>Cốt liệu</th>
+                            <th>Xi măng</th>
+                            <th>Nước</th>
+                            <th>PG</th>
+                            <th>Khối lượng</th>
+                            <th>Tích lũy</th>
+                            <th>Nhân viên</th>
+                            <th>Chế độ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (orders && orders.length > 0) { %>
+                            <% orders.forEach(o => { %>
+                                <tr>
+                                    <td><%= o.spx %></td>
+                                    <td><%= o.ma_kh %></td>
+                                    <td><%= o.ten_kh %></td>
+                                    <td><%= o.thoi_gian %></td>
+                                    <td><%= o.mac %></td>
+                                    <td><%= o.m3xe %></td>
+                                    <td><%= o.cot_lieu %></td>
+                                    <td><%= o.xi_mang %></td>
+                                    <td><%= o.nuoc %></td>
+                                    <td><%= o.pg %></td>
+                                    <td><%= o.khoi_luong %></td>
+                                    <td><%= o.tich_luy %></td>
+                                    <td><%= o.nhan_vien %></td>
+                                    <td><%= o.che_do %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="14" class="empty-state">Không có đơn hàng phù hợp.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

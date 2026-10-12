@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+<main class="main-wrapper">
+    <%- include('partials/kpi_cards') %>
+
+    <h2 class="section-main-heading">THÔNG TIN XE</h2>
+
+    <div class="table-action-bar">
+        <button class="btn-add-green" onclick="openAddModal()">
+            <i class="fa-solid fa-plus"></i> Thêm
+        </button>
+        <div class="search-input-group">
+            <input type="text" placeholder="Tìm xe...">
+            <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div class="table-responsive-box">
+        <table class="custom-data-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Mã LX</th>
+                    <th>Tên lái xe</th>
+                    <th>Biển số xe</th>
+                    <th>Điện thoại</th>
+                    <th>Thông tin</th>
+                    <th style="width: 140px;">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (vehicles && vehicles.length > 0) { %>
+                    <% vehicles.forEach(v => { %>
+                        <tr>
+                            <td><%= v.ma_lx %></td>
+                            <td><strong><%= v.ten_lai_xe %></strong></td>
+                            <td><span style="font-weight: 600; color: #0d47a1;"><%= v.bien_so_xe %></span></td>
+                            <td><%= v.dien_thoai %></td>
+                            <td><%= v.thong_tin %></td>
+                            <td>
+                                <button class="btn-action-edit" onclick="editVehicle('<%= v.id %>')"><i class="fa-solid fa-pen"></i> Sửa</button>
+                                <button class="btn-action-del" onclick="deleteVehicle('<%= v.id %>')"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="empty-state">Chưa có thông tin xe nào.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PHÂN TRANG -->
+    <div class="pagination-row">
+        <button class="page-btn">&laquo; Trước</button>
+        <span class="page-btn active">1 / 1</span>
+        <button class="page-btn">Tiếp &raquo;</button>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

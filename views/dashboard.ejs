@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+
+    <div class="main-content">
+        <div class="welcome-banner">
+            <h1>👋 Xin chào, <strong><%= user.fullname %></strong>!</h1>
+            <p>Trạm: <strong><%= user.tram %></strong> &nbsp;|&nbsp; Vai trò: <strong><%= user.role === 'admin' ? 'Quản trị viên' : 'Nhân viên' %></strong></p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🏗️</div>
+                <div class="stat-info">
+                    <h3>Đơn hàng hôm nay</h3>
+                    <p class="stat-number">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚛</div>
+                <div class="stat-info">
+                    <h3>Xe đang vận chuyển</h3>
+                    <p class="stat-number">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <h3>Tổng sản lượng (m³)</h3>
+                    <p class="stat-number">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h3>Hoàn thành</h3>
+                    <p class="stat-number">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

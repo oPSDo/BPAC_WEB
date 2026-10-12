@@ -1,0 +1,38 @@
+{
+  "stats": {
+    "orders_count": 1,
+    "customers_count": 1,
+    "total_m3": "9,3",
+    "total_kg": "22.271,7"
+  },
+  "orders": [
+    {
+      "id": "SPX002_1791716141753",
+      "spx": "SPX002",
+      "ma_kh": "KH002",
+      "ten_kh": "Khách hàng Trạm FUTA",
+      "thoi_gian": "Thứ năm, 08/10/2026 10:24:22",
+      "mac": "MAC250",
+      "m3xe": "9.3",
+      "m3_raw": 9.3,
+      "cot_lieu": "20.507",
+      "xi_mang": "901",
+      "nuoc": "180",
+      "pg": "864",
+      "khoi_luong": "22.272",
+      "kg_raw": 22271.699951171875,
+      "tich_luy": "22.272",
+      "nhan_vien": "Thợ trạm",
+      "che_do": "Tự động",
+      "bien_so": "89A-304.63",
+      "file_name": "Ghi_CaXe_10h_24m_22s.xls"
+    }
+  ],
+  "topCustomers": [
+    {
+      "name": "Khách hàng Trạm FUTA",
+      "m3": "9,3"
+    }
+  ],
+  "lastUpdated": "17:55:41"
+}

@@ -1,0 +1,75 @@
+<%- include('partials/header') %>
+
+<main class="main-wrapper">
+    <%- include('partials/kpi_cards') %>
+
+    <h2 class="section-main-heading">THÔNG TIN KHÁCH HÀNG</h2>
+
+    <div class="table-action-bar">
+        <button class="btn-add-green" onclick="openAddModal()">
+            <i class="fa-solid fa-plus"></i> Thêm
+        </button>
+        <div class="search-input-group">
+            <input type="text" placeholder="Tìm khách hàng...">
+            <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div class="table-responsive-box">
+        <table class="custom-data-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Ngày</th>
+                    <th>Mã KH</th>
+                    <th>MST</th>
+                    <th>Tên khách</th>
+                    <th>Đại diện</th>
+                    <th>Người LH</th>
+                    <th>Địa chỉ</th>
+                    <th>Điện thoại</th>
+                    <th>Email</th>
+                    <th>Tài khoản NH</th>
+                    <th>NV Kinh doanh</th>
+                    <th>Ghi chú</th>
+                    <th>Ngân hàng</th>
+                    <th>Tích lũy</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (customers && customers.length > 0) { %>
+                    <% customers.forEach(c => { %>
+                        <tr>
+                            <td><%= c.stt %></td>
+                            <td><%= c.ngay %></td>
+                            <td><strong><%= c.ma_kh %></strong></td>
+                            <td><%= c.mst %></td>
+                            <td style="text-align: left;"><strong><%= c.ten_kh %></strong></td>
+                            <td><%= c.dai_dien %></td>
+                            <td><%= c.nguoi_lh %></td>
+                            <td style="text-align: left;"><%= c.dia_chi %></td>
+                            <td><%= c.dien_thoai %></td>
+                            <td><%= c.email %></td>
+                            <td><%= c.tai_khoan_nh %></td>
+                            <td><%= c.nv_kd %></td>
+                            <td><%= c.ghi_chu %></td>
+                            <td><%= c.ngan_hang %></td>
+                            <td><strong><%= c.tich_luy %></strong></td>
+                            <td>
+                                <button class="btn-action-edit" onclick="editCustomer('<%= c.id %>')"><i class="fa-solid fa-pen"></i> Sửa</button>
+                                <button class="btn-action-del" onclick="deleteCustomer('<%= c.id %>')"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="16" class="empty-state">Chưa có thông tin khách hàng nào.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<%- include('partials/footer') %>
