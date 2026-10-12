@@ -131,7 +131,20 @@ def create_word_document(docx_path):
     add_p("• Địa chỉ máy chủ Cloud: ", "https://tram-tron-net.onrender.com")
     add_p("• Tài khoản quản trị mặc định: ", "admin / 123456")
     add_p("• Kho lưu trữ GitHub: ", "https://github.com/oPSDo/BPAC_WEB (Local: C:\\Users\\Admin\\Documents\\GitHub\\oPSDo\\BPAC_WEB)")
-    add_p("• Bản sao lưu Google Drive: ", "M:\\My Drive\\Dev\\ENQ\\TramTron_Web\\ENQ_WEB")
+    # MỤC ĐẶC THÙ CÔNG NGHỆ BÊ TÔNG NHỰA
+    add_custom_heading("★ ĐẶC THÙ CÔNG NGHỆ: TRẠM BÊ TÔNG NHỰA NÓNG (ASPHALT) KHÔNG PHẢI BÊ TÔNG XI MĂNG", 1)
+    add_callout(
+        "Dự án này phục vụ độc quyền cho TRẠM TRỘN BÊ TÔNG NHỰA NÓNG ASPHALT (ENQ 01). "
+        "Tuyệt đối không nhầm lẫn với trạm bê tông xi măng (bê tông tươi thương phẩm). "
+        "Toàn bộ thuật ngữ, quy trình điều khiển và chỉ số kỹ thuật đều tuân theo tiêu chuẩn bê tông nhựa nóng TCVN 8819:2011.",
+        "LƯU Ý CỐT LÕI CỦA DỰ ÁN"
+    )
+    add_p("1. Chất liên kết (Binder): ", "Dùng Nhựa đường đặc Asphalt 60/70 (Bitumen) được gia nhiệt nóng chảy ở 150°C - 165°C. TUYỆT ĐỐI KHÔNG DÙNG XI MĂNG VÀ KHÔNG DÙNG NƯỚC.")
+    add_p("2. Cốt liệu khoáng (Aggregates): ", "Gồm các cỡ đá dăm (Đá 10-20, Đá 5-10, Đá mạt 0-5) và cát xay được sấy khô, nung nóng trong tang sấy ở 160°C - 180°C trước khi đưa lên tháp trộn.")
+    add_p("3. Bột khoáng (Mineral Filler): ", "Bột đá vôi nghiền mịn lọt sàng 0.075mm (ký hiệu PG-F hoặc Filler) đóng vai trò chất độn tăng độ đặc chắc, tăng diện tích tiếp xúc với nhựa đường.")
+    add_p("4. Phụ gia Polyme (Additives): ", "Phụ gia biến tính SBS hoặc phụ gia tăng bám dính nhằm nâng cao độ ổn định nhiệt và chống lún vệt bánh xe của mặt đường.")
+    add_p("5. Mác bê tông nhựa: ", "Các cấp phối mác chuẩn gồm BTNC 9.5 (thảm mặt mịn), BTNC 12.5 (mặt đường phổ thông), BTNC 19 (lớp mặt dưới), BTNR 19/25 (bê tông nhựa rỗng làm móng) và bê tông nhựa Polyme.")
+    add_p("6. Đơn vị tính & Quy đổi: ", "Toàn bộ thành phần được cân điện tử theo khối lượng (Kg / Tấn). Thể tích thảm quy đổi m³ tính theo tỷ trọng đầm lèn thiết kế γ ≈ 2.400 kg/m³ (hoặc 2.4 Tấn/m³).")
 
     # MỤC 2
     add_custom_heading("2. QUY HOẠCH CẤU TRÚC THƯ MỤC CHUẨN", 1)
@@ -378,8 +391,17 @@ def create_pdf_document(pdf_path):
     story.append(Paragraph("<b>• Đơn vị chủ quản:</b> CÔNG TY TNHH THIẾT BỊ CÔNG TRÌNH VIỆT NAM", body_style))
     story.append(Paragraph("<b>• Địa chỉ máy chủ Cloud:</b> https://tram-tron-net.onrender.com", body_style))
     story.append(Paragraph("<b>• Tài khoản quản trị mặc định:</b> admin / 123456", body_style))
-    story.append(Paragraph("<b>• Kho lưu trữ GitHub:</b> https://github.com/oPSDo/BPAC_WEB", body_style))
     story.append(Paragraph("<b>• Sao lưu Google Drive:</b> M:\\My Drive\\Dev\\ENQ\\TramTron_Web\\ENQ_WEB", body_style))
+
+    # ĐẶC THÙ CÔNG NGHỆ BÊ TÔNG NHỰA
+    story.append(Paragraph("★ ĐẶC THÙ CÔNG NGHỆ: TRẠM BÊ TÔNG NHỰA NÓNG (ASPHALT) KHÔNG PHẢI BÊ TÔNG XI MĂNG", h1_style))
+    story.append(Paragraph("<b>LƯU Ý CỐT LÕI:</b> Dự án này phục vụ độc quyền cho TRẠM TRỘN BÊ TÔNG NHỰA NÓNG ASPHALT. Tuyệt đối không nhầm lẫn với trạm bê tông xi măng (bê tông tươi thương phẩm). Toàn bộ công nghệ tuân theo tiêu chuẩn TCVN 8819:2011:", callout_style))
+    story.append(Paragraph("<b>1. Chất liên kết (Binder):</b> Dùng Nhựa đường đặc Asphalt 60/70 (Bitumen) được gia nhiệt nóng chảy ở 150°C - 165°C. <b>TUYỆT ĐỐI KHÔNG DÙNG XI MĂNG VÀ KHÔNG DÙNG NƯỚC.</b>", body_style))
+    story.append(Paragraph("<b>2. Cốt liệu khoáng (Aggregates):</b> Gồm các cỡ đá dăm (Đá 10-20, Đá 5-10, Đá mạt 0-5) và cát xay được sấy khô, nung nóng trong tang sấy ở 160°C - 180°C trước khi trộn.", body_style))
+    story.append(Paragraph("<b>3. Bột khoáng (Filler):</b> Bột đá vôi nghiền mịn lọt sàng 0.075mm đóng vai trò chất độn tăng độ đặc chắc và bám dính nhựa.", body_style))
+    story.append(Paragraph("<b>4. Phụ gia Polyme (SBS):</b> Phụ gia biến tính SBS nâng cao độ ổn định nhiệt và chống lún vệt bánh xe của mặt đường.", body_style))
+    story.append(Paragraph("<b>5. Mác bê tông nhựa:</b> Cấp phối mác chuẩn gồm BTNC 9.5, BTNC 12.5, BTNC 19, BTNR 19, C14, C19... (không phải mác M250, M300 của xi măng).", body_style))
+    story.append(Paragraph("<b>6. Đơn vị tính:</b> Cân điện tử theo khối lượng (Kg / Tấn). Thể tích thảm quy đổi m³ tính theo tỷ trọng đầm lèn γ ≈ 2.400 kg/m³.", body_style))
 
     # 2. Quy hoạch thư mục
     story.append(Paragraph("2. QUY HOẠCH CẤU TRÚC THƯ MỤC CHUẨN", h1_style))

@@ -54,7 +54,9 @@ const {
     getVehicles,
     getVehicleById,
     saveVehicle,
-    deleteVehicle
+    deleteVehicle,
+    getAllVehicleBatches,
+    getVehicleBatches
 } = require('../services/dataStore');
 
 // ==================== CÁC ROUTES ====================
@@ -158,13 +160,15 @@ router.get('/customers/get/:id', requireLogin, (req, res) => {
 router.post('/customers/save', requireLogin, (req, res) => {
     try {
         const saved = saveCustomer(req.body);
-        if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
             return res.json({ success: true, message: 'Đã lưu thông tin khách hàng thành công', customer: saved });
         }
         res.redirect('/customers');
     } catch (err) {
         console.error('Lỗi lưu khách hàng:', err);
-        if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
             return res.status(500).json({ success: false, message: err.message });
         }
         res.redirect('/customers');
@@ -174,13 +178,15 @@ router.post('/customers/save', requireLogin, (req, res) => {
 router.post('/customers/delete/:id', requireLogin, (req, res) => {
     try {
         deleteCustomer(req.params.id);
-        if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
             return res.json({ success: true, message: 'Đã xóa khách hàng thành công' });
         }
         res.redirect('/customers');
     } catch (err) {
         console.error('Lỗi xóa khách hàng:', err);
-        if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
             return res.status(500).json({ success: false, message: err.message });
         }
         res.redirect('/customers');
@@ -208,13 +214,15 @@ router.get('/vehicles/get/:id', requireLogin, (req, res) => {
 router.post('/vehicles/save', requireLogin, (req, res) => {
     try {
         const saved = saveVehicle(req.body);
-        if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
             return res.json({ success: true, message: 'Đã lưu thông tin xe thành công', vehicle: saved });
         }
         res.redirect('/vehicles');
     } catch (err) {
         console.error('Lỗi lưu xe:', err);
-        if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
             return res.status(500).json({ success: false, message: err.message });
         }
         res.redirect('/vehicles');
@@ -224,13 +232,15 @@ router.post('/vehicles/save', requireLogin, (req, res) => {
 router.post('/vehicles/delete/:id', requireLogin, (req, res) => {
     try {
         deleteVehicle(req.params.id);
-        if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
             return res.json({ success: true, message: 'Đã xóa xe thành công' });
         }
         res.redirect('/vehicles');
     } catch (err) {
         console.error('Lỗi xóa xe:', err);
-        if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
             return res.status(500).json({ success: false, message: err.message });
         }
         res.redirect('/vehicles');
@@ -239,21 +249,137 @@ router.post('/vehicles/delete/:id', requireLogin, (req, res) => {
 
 // DỮ LIỆU THEO KHÁCH HÀNG
 router.get('/customer-data', requireLogin, (req, res) => {
-    res.render('report_view', {
+    const liveData = loadData();
+    const orders = liveData.orders || [];
+    const rawCustomers = getCustomers();
+
+    const custMap = {};
+    orders.forEach(o => {
+        const name = (o.ten_kh && o.ten_kh.trim()) ? o.ten_kh.trim() : 'Khách lẻ';
+        if (!custMap[name]) {
+            custMap[name] = {
+                ten_kh: name,
+                dia_chi: o.dia_chi || '',
+                so_hd: o.so_hd || '',
+                dai_dien: o.nhan_vien || '',
+                dien_thoai: '',
+                so_chuyen: 0,
+                tong_me: 0,
+                tong_kg: 0,
+                tong_m3: 0,
+                tong_cot_lieu: 0,
+                tong_nhua: 0,
+                tong_pg: 0,
+                orders: []
+            };
+        }
+        const kg = o.kg_raw || 0;
+        const m3 = o.m3_raw || 0;
+        const cl = parseFloat(String(o.cot_lieu || 0).replace(/\./g, '').replace(',', '.')) || 0;
+        const nhua = parseFloat(String(o.nhua || 0).replace(/\./g, '').replace(',', '.')) || 0;
+        const pg = parseFloat(String(o.pg || 0).replace(/\./g, '').replace(',', '.')) || 0;
+
+        custMap[name].so_chuyen += 1;
+        custMap[name].tong_me += (o.sl_me || 6);
+        custMap[name].tong_kg += kg;
+        custMap[name].tong_m3 += m3;
+        custMap[name].tong_cot_lieu += cl;
+        custMap[name].tong_nhua += nhua;
+        custMap[name].tong_pg += pg;
+        custMap[name].orders.push(o);
+    });
+
+    rawCustomers.forEach(rc => {
+        if (!custMap[rc.ten_kh]) {
+            custMap[rc.ten_kh] = {
+                ten_kh: rc.ten_kh,
+                dia_chi: rc.dia_chi || '',
+                so_hd: rc.ghi_chu || '',
+                dai_dien: rc.dai_dien || '',
+                dien_thoai: rc.dien_thoai || '',
+                so_chuyen: 0,
+                tong_me: 0,
+                tong_kg: 0,
+                tong_m3: 0,
+                tong_cot_lieu: 0,
+                tong_nhua: 0,
+                tong_pg: 0,
+                orders: []
+            };
+        } else {
+            if (rc.dien_thoai) custMap[rc.ten_kh].dien_thoai = rc.dien_thoai;
+            if (rc.dai_dien) custMap[rc.ten_kh].dai_dien = rc.dai_dien;
+        }
+    });
+
+    const customersList = Object.values(custMap).map(c => ({
+        ten_kh: c.ten_kh,
+        dia_chi: c.dia_chi,
+        so_chuyen: c.so_chuyen,
+        tong_kg: c.tong_kg > 0 ? c.tong_kg.toLocaleString('vi-VN') : '0'
+    }));
+
+    let selectedCustomer = req.query.cust ? String(req.query.cust).trim() : '';
+    if (!selectedCustomer && customersList.length > 0) {
+        selectedCustomer = customersList[0].ten_kh;
+    }
+
+    const currentCust = custMap[selectedCustomer] || null;
+    let customerInfo = null;
+    let customerOrders = [];
+
+    if (currentCust) {
+        customerInfo = {
+            ten_kh: currentCust.ten_kh,
+            dia_chi: currentCust.dia_chi,
+            so_hd: currentCust.so_hd,
+            dai_dien: currentCust.dai_dien,
+            dien_thoai: currentCust.dien_thoai || '0913383246',
+            so_chuyen: currentCust.so_chuyen,
+            tong_me: currentCust.tong_me,
+            tong_kg: currentCust.tong_kg,
+            tong_m3: currentCust.tong_m3.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+            tong_cot_lieu: currentCust.tong_cot_lieu.toLocaleString('vi-VN'),
+            tong_nhua: currentCust.tong_nhua.toLocaleString('vi-VN'),
+            tong_pg: currentCust.tong_pg.toLocaleString('vi-VN')
+        };
+        customerOrders = currentCust.orders;
+    }
+
+    res.render('customer_data', {
         title: 'Dữ liệu theo khách hàng - Trạm Trộn Asphalt ENQ 01',
-        pageTitle: 'DỮ LIỆU THEO KHÁCH HÀNG',
         currentPath: '/customer-data',
-        kpi: getLiveKpi()
+        kpi: getLiveKpi(),
+        customersList,
+        selectedCustomer,
+        customerInfo,
+        customerOrders
     });
 });
 
 // DỮ LIỆU THEO XE
 router.get('/vehicle-data', requireLogin, (req, res) => {
-    res.render('report_view', {
+    const allBatches = getAllVehicleBatches();
+    const vehiclesList = allBatches.map(b => ({
+        bien_so: b.bien_so,
+        so_me: b.so_me || (b.batches ? b.batches.length : 0),
+        tong_kg: Number(b.tong_kg || 0).toLocaleString('vi-VN')
+    }));
+
+    let selectedBienSo = req.query.bien_so ? String(req.query.bien_so).trim() : '';
+    if (!selectedBienSo && vehiclesList.length > 0) {
+        selectedBienSo = vehiclesList[0].bien_so;
+    }
+
+    const batchInfo = getVehicleBatches(selectedBienSo);
+
+    res.render('vehicle_data', {
         title: 'Dữ liệu theo xe - Trạm Trộn Asphalt ENQ 01',
-        pageTitle: 'DỮ LIỆU THEO XE',
         currentPath: '/vehicle-data',
-        kpi: getLiveKpi()
+        kpi: getLiveKpi(),
+        vehiclesList,
+        selectedBienSo,
+        batchInfo
     });
 });
 

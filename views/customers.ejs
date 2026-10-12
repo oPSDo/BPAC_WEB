@@ -221,19 +221,25 @@
             },
             body: JSON.stringify(payload)
         })
-        .then(res => res.json())
+        .then(async res => {
+            const data = await res.json().catch(() => null);
+            if (!res.ok) {
+                throw new Error((data && data.message) ? data.message : ('Lỗi HTTP ' + res.status));
+            }
+            return data;
+        })
         .then(data => {
-            if (data.success) {
+            if (data && data.success) {
                 alert(payload.id ? 'Cập nhật khách hàng thành công!' : 'Thêm mới khách hàng thành công!');
                 closeModal();
                 location.reload();
             } else {
-                alert('Lỗi: ' + (data.message || 'Không thể lưu dữ liệu'));
+                alert('Lỗi: ' + (data && data.message ? data.message : 'Không thể lưu dữ liệu'));
             }
         })
         .catch(err => {
             console.error(err);
-            alert('Lỗi kết nối khi lưu thông tin khách hàng!');
+            alert('Lỗi lưu thông tin khách hàng: ' + err.message);
         });
     }
 
@@ -244,20 +250,29 @@
 
         fetch('/customers/delete/' + encodeURIComponent(id), {
             method: 'POST',
-            headers: { 'Accept': 'application/json' }
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json' 
+            }
         })
-        .then(res => res.json())
+        .then(async res => {
+            const data = await res.json().catch(() => null);
+            if (!res.ok) {
+                throw new Error((data && data.message) ? data.message : ('Lỗi HTTP ' + res.status));
+            }
+            return data;
+        })
         .then(data => {
-            if (data.success) {
+            if (data && data.success) {
                 alert('Đã xóa khách hàng thành công!');
                 location.reload();
             } else {
-                alert('Lỗi: ' + (data.message || 'Không thể xóa'));
+                alert('Lỗi: ' + (data && data.message ? data.message : 'Không thể xóa'));
             }
         })
         .catch(err => {
             console.error(err);
-            alert('Lỗi kết nối khi gửi yêu cầu xóa!');
+            alert('Lỗi gửi yêu cầu xóa: ' + err.message);
         });
     }
 

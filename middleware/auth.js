@@ -5,6 +5,9 @@ function requireLogin(req, res, next) {
     if (req.session && req.session.user) {
         return next();
     }
+    if (req.xhr || req.headers.accept?.indexOf('json') > -1 || req.is('json') || req.headers['content-type']?.indexOf('json') > -1) {
+        return res.status(401).json({ success: false, message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.' });
+    }
     req.flash('error', 'Vui lòng đăng nhập để tiếp tục.');
     res.redirect('/auth/login');
 }

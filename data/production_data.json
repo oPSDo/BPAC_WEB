@@ -1,11 +1,40 @@
 {
   "stats": {
-    "orders_count": 0,
-    "customers_count": 0,
-    "total_m3": "0,0",
-    "total_kg": "0,0"
+    "orders_count": 1,
+    "customers_count": 1,
+    "total_m3": "3,5",
+    "total_kg": "8.492"
   },
-  "orders": [],
-  "topCustomers": [],
-  "lastUpdated": ""
+  "orders": [
+    {
+      "id": "SPX004_1791796169968",
+      "spx": "SPX004",
+      "ma_kh": "KH_MHG",
+      "ten_kh": "MHG",
+      "dia_chi": "BHG",
+      "so_hd": "123",
+      "thoi_gian": "Thứ hai, 10/12/2026 3:45:49 PM",
+      "mac": "19",
+      "m3xe": "3.5",
+      "m3_raw": 3.5,
+      "cot_lieu": "7.610",
+      "nhua": "360",
+      "pg": "522",
+      "khoi_luong": "8.492",
+      "kg_raw": 8492,
+      "tich_luy": "8.492",
+      "nhan_vien": "A",
+      "che_do": "Tự động",
+      "bien_so": "12345",
+      "sl_me": 6,
+      "file_name": "Ghi_CaXe_15h_45m_49s.xls"
+    }
+  ],
+  "topCustomers": [
+    {
+      "name": "MHG",
+      "m3": "3,5"
+    }
+  ],
+  "lastUpdated": "16:09:29"
 }

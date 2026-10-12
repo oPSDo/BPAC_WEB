@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { parseCaXe, parseCTXe, parseCTNgay } = require('../services/excelParser');
-const { addOrder, loadData, resetData } = require('../services/dataStore');
+const { addOrder, loadData, resetData, saveVehicleBatches } = require('../services/dataStore');
 
 // Cấu hình lưu trữ file upload
 const storage = multer.diskStorage({
@@ -73,8 +73,9 @@ router.post('/upload', verifyApiKey, upload.single('file'), (req, res) => {
         else if (lowerName.startsWith('ghi_ctxe_') && lowerName.endsWith('.xls')) {
             parseResult = parseCTXe(filePath);
             if (parseResult) {
+                saveVehicleBatches(parseResult);
                 addOrder(parseResult);
-                console.log(`✅ Đã bóc tách thành công phiếu CTXe: ${parseResult.spx} - Biển số: ${parseResult.bien_so} (${parseResult.m3xe} m³)`);
+                console.log(`✅ Đã bóc tách thành công phiếu CTXe: ${parseResult.spx} - Biển số: ${parseResult.bien_so} (${parseResult.m3xe} m³) - ${parseResult.batches ? parseResult.batches.length : 0} mẻ`);
             }
         }
         // 3. File tổng hợp Ghi_CT Ngày_...xls

@@ -1,3 +1,5 @@
 node_modules/
 .env
 *.log
+*.zip
+BPAC_PC/BPAC_2026RT/

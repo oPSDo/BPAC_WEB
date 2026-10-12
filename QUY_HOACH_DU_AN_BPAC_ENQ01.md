@@ -19,6 +19,33 @@ Ban giám đốc và kỹ sư điều hành có thể theo dõi sản lượng, 
 
 ---
 
+## ★ ĐẶC THÙ CÔNG NGHỆ: TRẠM BÊ TÔNG NHỰA NÓNG (ASPHALT) KHÔNG PHẢI BÊ TÔNG XI MĂNG
+
+> [!IMPORTANT]
+> **LƯU Ý CỐT LÕI CỦA DỰ ÁN:**  
+> Dự án này phục vụ độc quyền cho **TRẠM TRỘN BÊ TÔNG NHỰA NÓNG ASPHALT (ENQ 01)**.  
+> Tuyệt đối không nhầm lẫn với trạm bê tông xi măng (bê tông tươi thương phẩm).  
+> Toàn bộ quy trình công nghệ, thành phần cấp phối và thuật ngữ đều tuân thủ Tiêu chuẩn quốc gia **TCVN 8819:2011 (Mặt đường bê tông nhựa nóng)**:
+
+1. **Chất liên kết (Bitumen Binder):**
+   - Sử dụng **Nhựa đường đặc 60/70 (Asphalt Bitumen)** được đun nóng chảy ở nhiệt độ $150^\circ\text{C} - 165^\circ\text{C}$.
+   - **TUYỆT ĐỐI KHÔNG DÙNG XI MĂNG VÀ KHÔNG DÙNG NƯỚC.**
+2. **Cốt liệu khoáng (Mineral Aggregates):**
+   - Gồm các cỡ hạt: Đá 10–20 (Đá 1x2), Đá 5–10 (Đá 0.5x1), Đá mạt 0–5, Cát xay sàng.
+   - Toàn bộ cốt liệu phải qua **tang sấy nung nóng ở $160^\circ\text{C} - 180^\circ\text{C}$** để bốc hết hơi ẩm trước khi đưa lên tháp sàng và cân đong mẻ trộn.
+3. **Bột khoáng (Mineral Filler):**
+   - Bột đá vôi nghiền siêu mịn lọt sàng 0.075mm (ký hiệu PG-F hoặc Filler), đóng vai trò chất độn làm đặc chắc bê tông nhựa và tăng cường độ dính bám với màng nhựa đường.
+4. **Phụ gia Polyme (Additives):**
+   - Phụ gia biến tính SBS, phụ gia tăng dính bám giúp bê tông nhựa kháng lún vệt bánh xe, chịu nhiệt độ cao và chống nứt nẻ.
+5. **Mác bê tông nhựa nóng:**
+   - Cấp phối mác chuẩn gồm: **BTNC 9.5** (bê tông nhựa chặt hạt mịn), **BTNC 12.5** (bê tông nhựa chặt hạt trung - phổ biến nhất), **BTNC 19** (lớp mặt dưới), **BTNR 19/25** (bê tông nhựa rỗng làm lớp móng) và bê tông nhựa Polyme.
+   - Các mã mác thực tế xuất từ trạm Siemens: `C14`, `MAC_C19`, `C12.5`... (hoàn toàn khác với các mác M250, M300 của bê tông xi măng).
+6. **Đơn vị tính & Tỷ trọng thảm quy đổi:**
+   - Cân định lượng điện tử theo khối lượng **Kilôgam (Kg)** hoặc **Tấn**.
+   - Thể tích thảm quy đổi tính theo tỷ trọng đầm lèn thiết kế: $\gamma \approx 2.400\text{ kg/m}^3$ (hay $2.4\text{ Tấn/m}^3$). Khối lượng thảm nhựa xuất trạm chia cho 2.400 để ra số mét khối thảm ($\text{m}^3$).
+
+---
+
 ## 2. QUY HOẠCH CẤU TRÚC THƯ MỤC CHUẨN
 
 Toàn bộ không gian làm việc của dự án được quy hoạch phân chia rõ ràng làm 3 phân vùng độc lập:

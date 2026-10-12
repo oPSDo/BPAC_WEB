@@ -5,86 +5,51 @@ const DATA_FILE = path.join(__dirname, '..', 'data', 'production_data.json');
 const MACS_FILE = path.join(__dirname, '..', 'data', 'macs.json');
 const CUSTOMERS_FILE = path.join(__dirname, '..', 'data', 'customers.json');
 const VEHICLES_FILE = path.join(__dirname, '..', 'data', 'vehicles.json');
+const VEHICLE_BATCHES_FILE = path.join(__dirname, '..', 'data', 'vehicle_batches.json');
 
-// Dữ liệu mặc định ban đầu
+// Dữ liệu mặc định ban đầu cho Trạm trộn Asphalt ENQ 01
 const MACS_DEFAULT = [
     {
-        id: '1', stt: 1, ten_mac: 'C14',
-        cl1: '480.00', cl2: '330.00', cl3: '260.00', cl4: '115.00', cl5: '55.00',
-        pg1: '42.00', pg2: '27.50', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        id: '1', stt: 1, ten_mac: '19',
+        cl1: '516.00', cl2: '298.00', cl3: '283.00', cl4: '138.00', cl5: '32.00',
+        pg1: '56.80', pg2: '27.20', ten_pg1: 'Bột khoáng (Filler PG-F)', ten_pg2: 'Phụ gia PG-D',
         ten_cl1: 'Đá 10-20', ten_cl2: 'Đá 5-10', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát hạt mịn',
         do_sut: '160°C'
     },
     {
-        id: '2', stt: 2, ten_mac: 'MAC_C19',
-        cl1: '520.00', cl2: '300.00', cl3: '240.00', cl4: '120.00', cl5: '50.00',
-        pg1: '38.00', pg2: '25.00', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        id: '2', stt: 2, ten_mac: 'C14',
+        cl1: '480.00', cl2: '330.00', cl3: '260.00', cl4: '115.00', cl5: '55.00',
+        pg1: '42.00', pg2: '27.50', ten_pg1: 'Bột khoáng (Filler PG-F)', ten_pg2: 'Phụ gia SBS',
         ten_cl1: 'Đá 10-20', ten_cl2: 'Đá 5-10', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát hạt mịn',
-        do_sut: '165°C'
+        do_sut: '160°C'
     },
     {
         id: '3', stt: 3, ten_mac: 'BTNC 12.5',
         cl1: '470.00', cl2: '340.00', cl3: '270.00', cl4: '110.00', cl5: '50.00',
-        pg1: '45.00', pg2: '28.00', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        pg1: '45.00', pg2: '28.00', ten_pg1: 'Bột khoáng (Filler PG-F)', ten_pg2: 'Phụ gia SBS',
         ten_cl1: 'Đá 10-20', ten_cl2: 'Đá 5-10', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát hạt mịn',
         do_sut: '160°C'
     },
     {
         id: '4', stt: 4, ten_mac: 'BTNC 9.5',
         cl1: '350.00', cl2: '420.00', cl3: '280.00', cl4: '130.00', cl5: '60.00',
-        pg1: '48.00', pg2: '30.00', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
+        pg1: '48.00', pg2: '30.00', ten_pg1: 'Bột khoáng (Filler PG-F)', ten_pg2: 'Phụ gia SBS',
         ten_cl1: 'Đá 5-10', ten_cl2: 'Đá 3-8', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát mịn',
         do_sut: '160°C'
-    },
-    {
-        id: '5', stt: 5, ten_mac: 'BTNR 19',
-        cl1: '580.00', cl2: '280.00', cl3: '220.00', cl4: '100.00', cl5: '40.00',
-        pg1: '30.00', pg2: '20.00', ten_pg1: 'Bột khoáng (Filler)', ten_pg2: 'Phụ gia SBS',
-        ten_cl1: 'Đá 10-20', ten_cl2: 'Đá 5-10', ten_cl3: 'Đá mạt 0-5', ten_cl4: 'Cát xay', ten_cl5: 'Cát hạt mịn',
-        do_sut: '155°C'
     }
 ];
 
 const CUSTOMERS_DEFAULT = [
     {
-        id: '1', stt: 1, ngay: '2025-01-31', ma_kh: 'KH001', mst: '0915115116',
-        ten_kh: 'Công ty TNHH Tự động hóa ABC', dai_dien: 'Nguyễn Tiến Giang', nguoi_lh: 'Nguyễn Tiến Giang',
-        dia_chi: 'Huỳnh Cung - Tam Hiệp - Thanh Trì - Hà Nội', dien_thoai: '0912888729', email: 'armataauto@gmail.com',
-        tai_khoan_nh: '0341005047647', nv_kd: 'Lê Tí', ghi_chu: 'Khách hàng khó tính', ngan_hang: 'VCB Hải Dương', tich_luy: '902.00'
-    },
-    {
-        id: '2003', stt: 2003, ngay: '2025-04-01', ma_kh: 'KH0010', mst: '0912888759',
-        ten_kh: 'Công ty XD và Thương Mại ACB', dai_dien: 'anh A', nguoi_lh: 'Anh A',
-        dia_chi: 'Địa chỉ anh A', dien_thoai: '0123456789', email: '',
-        tai_khoan_nh: '', nv_kd: 'Lê Anh', ghi_chu: '', ngan_hang: 'ACB Hưng Yên', tich_luy: '237.10'
-    },
-    {
-        id: '2004', stt: 2004, ngay: '2025-04-01', ma_kh: 'KH0011', mst: '0912888753',
-        ten_kh: 'Công ty XD và Thương Mại ACBa', dai_dien: 'anh Aa', nguoi_lh: 'Anh Aa',
-        dia_chi: 'Địa chỉ anh A', dien_thoai: '0123456788', email: '',
-        tai_khoan_nh: '123', nv_kd: 'Lê Anh', ghi_chu: '', ngan_hang: 'ACB Hưng Yên', tich_luy: '20.00'
-    },
-    {
-        id: '2', stt: 2, ngay: '2025-02-01', ma_kh: 'KH002', mst: '0901115084',
-        ten_kh: 'Công ty TNHH Tự động hóa D Tech', dai_dien: 'Lê Việt Anh', nguoi_lh: 'Lê Việt Anh',
-        dia_chi: 'Đội 3 thôn Phương Thượng xã Phương Nam TP Hưng Yên', dien_thoai: '0912888729', email: 'mr.anhv@gmail.com',
-        tai_khoan_nh: '0341005047647', nv_kd: 'Phạm Thế Thảo', ghi_chu: 'Công ty tại địa bàn Hưng Yên', ngan_hang: '', tich_luy: '518.10'
-    },
-    {
-        id: '9', stt: 9, ngay: '2025-02-01', ma_kh: 'KH003', mst: '123456789',
-        ten_kh: 'Công ty TM và đầu tư Tín Phong', dai_dien: 'Nguyễn Thị Mai', nguoi_lh: 'Nguyễn Thị Mai',
-        dia_chi: '999 Ka Long, TP Móng Cái, Quảng Ninh', dien_thoai: '09123456789', email: 'tinphong@gmail.com',
-        tai_khoan_nh: '', nv_kd: 'Lê Tí', ghi_chu: '', ngan_hang: '', tich_luy: '354.10'
+        id: '1', stt: 1, ngay: '2026-10-12', ma_kh: 'KH_MHG', mst: '0913383246',
+        ten_kh: 'MHG', dai_dien: 'Anh A', nguoi_lh: 'Anh A',
+        dia_chi: 'BHG', dien_thoai: '0913383246', email: 'mhg.asphalt@gmail.com',
+        tai_khoan_nh: '123', nv_kd: 'Trạm ENQ 01', ghi_chu: 'Hợp đồng số 123', ngan_hang: 'Vietcombank', tich_luy: '8.492'
     }
 ];
 
 const VEHICLES_DEFAULT = [
-    { id: '1', ma_lx: 1, ten_lai_xe: 'Lê Việt Anh', bien_so_xe: '89A-304.63', dien_thoai: '1234566789', thong_tin: 'Đội xe GHT' },
-    { id: '2', ma_lx: 2, ten_lai_xe: 'Phạm Thế Thảo', bien_so_xe: '89A-095.14', dien_thoai: '998899899', thong_tin: 'Đội xe sửa chữa' },
-    { id: '3', ma_lx: 3, ten_lai_xe: 'Phạm Thế Thảo', bien_so_xe: '89A-095.14', dien_thoai: '123456', thong_tin: 'Đội xe sửa chữa' },
-    { id: '4', ma_lx: 4, ten_lai_xe: 'Phạm Thế Thảo', bien_so_xe: '89A-095.14', dien_thoai: '55555555', thong_tin: 'Đội xe sửa chữa' },
-    { id: '6', ma_lx: 6, ten_lai_xe: 'Lê Tèo', bien_so_xe: '89A-304.63', dien_thoai: '0912345678', thong_tin: 'Đội xe GHT' },
-    { id: '7', ma_lx: 7, ten_lai_xe: 'Lê Tí', bien_so_xe: '89A-304.63', dien_thoai: '475845454', thong_tin: 'Đội xe GHT' }
+    { id: '1', ma_lx: 1, ten_lai_xe: 'A', bien_so_xe: '12345', dien_thoai: '0913383246', thong_tin: 'Đội xe Trạm Asphalt ENQ 01' }
 ];
 
 // Helper đọc/ghi JSON chung
@@ -285,11 +250,49 @@ function saveData(data) {
     }
 }
 
+function ensureVehicleAndCustomer(order) {
+    if (!order) return;
+    try {
+        if (order.bien_so) {
+            const vehicles = getVehicles();
+            const foundVeh = vehicles.find(v => String(v.bien_so_xe).trim().toLowerCase() === String(order.bien_so).trim().toLowerCase());
+            if (!foundVeh) {
+                saveVehicle({
+                    ten_lai_xe: order.nhan_vien || order.tai_xe || 'A',
+                    bien_so_xe: order.bien_so,
+                    dien_thoai: '0913383246',
+                    thong_tin: 'Đội xe Trạm Asphalt ENQ 01'
+                });
+            }
+        }
+        if (order.ten_kh && order.ten_kh !== 'Khách lẻ') {
+            const customers = getCustomers();
+            const foundCust = customers.find(c => String(c.ten_kh).trim().toLowerCase() === String(order.ten_kh).trim().toLowerCase());
+            if (!foundCust) {
+                saveCustomer({
+                    ma_kh: order.ma_kh || ('KH_' + String(order.ten_kh).replace(/\s+/g, '')),
+                    ten_kh: order.ten_kh,
+                    ngay: new Date().toISOString().split('T')[0],
+                    dai_dien: order.nhan_vien || 'Anh A',
+                    nguoi_lh: order.nhan_vien || 'Anh A',
+                    dia_chi: order.dia_chi || 'BHG',
+                    dien_thoai: '0913383246',
+                    ghi_chu: order.so_hd ? ('Hợp đồng số ' + order.so_hd) : '',
+                    tich_luy: order.khoi_luong || '0.00'
+                });
+            }
+        }
+    } catch (e) {
+        console.error('Lỗi tự động thêm xe/khách hàng:', e.message);
+    }
+}
+
 /**
  * Thêm một đơn / chuyến xe mới vào danh sách và cập nhật KPI
  */
 function addOrder(orderData) {
     const data = loadData();
+    ensureVehicleAndCustomer(orderData);
 
     // Tránh trùng số phiếu
     const existingIndex = data.orders.findIndex(o => o.spx === orderData.spx && o.file_name === orderData.file_name);
@@ -348,6 +351,66 @@ function resetData() {
     return emptyData;
 }
 
+// ----------------- VEHICLE BATCHES (CHI TIẾT MẺ XE) -----------------
+const VEHICLE_BATCHES_DEFAULT = [
+    {
+        bien_so: '12345',
+        spx: 'SPX004',
+        tai_xe: 'A',
+        mac: '19',
+        so_me: 6,
+        tong_kg: 8492,
+        m3: '3.5',
+        thoi_gian: '10/12/2026 15:45:49',
+        batches: [
+            { me_stt: 1, thoi_gian: '15:41:47', mac: '19', cl1: 511, cl2: 304, cl3: 299, cl4: 141, cl5: 40, pg1: 56.6, pg2: 26.2, nhua: 59.5, sbs: 2.87, tham_kg: 1440 },
+            { me_stt: 2, thoi_gian: '15:42:31', mac: '19', cl1: 521, cl2: 296, cl3: 272, cl4: 126, cl5: 41, pg1: 56.4, pg2: 25.6, nhua: 59.4, sbs: 2.87, tham_kg: 1400 },
+            { me_stt: 3, thoi_gian: '15:43:17', mac: '19', cl1: 519, cl2: 294, cl3: 277, cl4: 145, cl5: 24, pg1: 56.5, pg2: 27.1, nhua: 61.2, sbs: 2.87, tham_kg: 1407 },
+            { me_stt: 4, thoi_gian: '15:43:59', mac: '19', cl1: 511, cl2: 304, cl3: 299, cl4: 141, cl5: 40, pg1: 56.5, pg2: 28.9, nhua: 59.8, sbs: 2.87, tham_kg: 1443 },
+            { me_stt: 5, thoi_gian: '15:45:02', mac: '19', cl1: 520, cl2: 287, cl3: 282, cl4: 134, cl5: 26, pg1: 58.6, pg2: 27.3, nhua: 59.1, sbs: 2.87, tham_kg: 1397 },
+            { me_stt: 6, thoi_gian: '15:45:26', mac: '19', cl1: 511, cl2: 309, cl3: 270, cl4: 146, cl5: 20, pg1: 56.3, pg2: 28.9, nhua: 61.3, sbs: 2.87, tham_kg: 1405 }
+        ]
+    }
+];
+
+function getAllVehicleBatches() {
+    return readJsonFile(VEHICLE_BATCHES_FILE, VEHICLE_BATCHES_DEFAULT);
+}
+
+function getVehicleBatches(bienSo) {
+    const list = getAllVehicleBatches();
+    if (!bienSo) return list[0] || null;
+    const cleanBien = String(bienSo).trim().toLowerCase();
+    return list.find(v => String(v.bien_so).trim().toLowerCase() === cleanBien) || list[0] || null;
+}
+
+function saveVehicleBatches(batchData) {
+    if (!batchData || !batchData.bien_so) return null;
+    const list = getAllVehicleBatches();
+    const cleanBien = String(batchData.bien_so).trim();
+    const idx = list.findIndex(v => String(v.bien_so).trim().toLowerCase() === cleanBien.toLowerCase());
+    
+    const formatted = {
+        bien_so: cleanBien,
+        spx: batchData.spx || 'SPX001',
+        tai_xe: batchData.nhan_vien || batchData.tai_xe || 'A',
+        mac: batchData.mac || '19',
+        so_me: batchData.so_me || (batchData.batches ? batchData.batches.length : 0),
+        tong_kg: batchData.kg_raw || batchData.tong_kg || 0,
+        m3: batchData.m3xe || batchData.m3 || (batchData.kg_raw ? (batchData.kg_raw / 2400).toFixed(1) : '0.0'),
+        thoi_gian: batchData.thoi_gian || new Date().toLocaleString('vi-VN'),
+        batches: batchData.batches || []
+    };
+
+    if (idx >= 0) {
+        list[idx] = formatted;
+    } else {
+        list.push(formatted);
+    }
+    writeJsonFile(VEHICLE_BATCHES_FILE, list);
+    return formatted;
+}
+
 module.exports = {
     loadData,
     saveData,
@@ -364,6 +427,9 @@ module.exports = {
     getVehicles,
     getVehicleById,
     saveVehicle,
-    deleteVehicle
+    deleteVehicle,
+    getAllVehicleBatches,
+    getVehicleBatches,
+    saveVehicleBatches
 };
 

@@ -1,0 +1,175 @@
+<%- include('partials/header') %>
+
+<main class="main-wrapper">
+    <%- include('partials/kpi_cards') %>
+
+    <div class="page-title-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+        <h2 class="section-main-heading" style="margin-bottom: 0;">DỮ LIỆU THEO KHÁCH HÀNG</h2>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn-green-filter" onclick="window.print()">
+                <i class="fa-solid fa-print"></i> In báo cáo
+            </button>
+            <button class="btn-green-filter" onclick="exportCustomerExcel()">
+                <i class="fa-solid fa-file-excel"></i> Xuất Excel khách hàng
+            </button>
+        </div>
+    </div>
+
+    <!-- THANH CHỌN KHÁCH HÀNG & BỘ LỌC -->
+    <div class="phieu-filter-bar" style="background: #ffffff; padding: 14px 18px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <label style="font-weight: 600; color: #1e293b;">
+                <i class="fa-solid fa-user-tie" style="color: #059669;"></i> Chọn khách hàng:
+            </label>
+            <select id="selectCustomer" class="input-filter-text" style="width: auto; min-width: 220px; font-weight: bold; color: #059669;" onchange="onSelectCustomer(this.value)">
+                <% if (typeof customersList !== 'undefined' && customersList.length > 0) { %>
+                    <% customersList.forEach(c => { %>
+                        <option value="<%= c.ten_kh %>" <%= (selectedCustomer === c.ten_kh) ? 'selected' : '' %>>
+                            Khách: <%= c.ten_kh %> - <%= c.dia_chi || 'BHG' %> (<%= c.so_chuyen %> chuyến - <%= c.tong_kg %> Kg)
+                        </option>
+                    <% }) %>
+                <% } else { %>
+                    <option value="MHG" selected>Khách MHG - BHG (HĐ 123)</option>
+                <% } %>
+            </select>
+            <span style="font-size: 13px; color: #64748b;">(Thống kê sản lượng thảm bê tông nhựa giao theo khách hàng)</span>
+        </div>
+    </div>
+
+    <% if (customerInfo) { %>
+        <!-- THẺ TÓM TẮT THÔNG TIN KHÁCH HÀNG -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 20px;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #059669; border-radius: 6px; padding: 12px 16px;">
+                <div style="font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase;">Khách Hàng & Công Trình</div>
+                <div style="font-size: 18px; font-weight: bold; color: #0f172a; margin-top: 4px;">
+                    <%= customerInfo.ten_kh %>
+                </div>
+                <div style="font-size: 13px; color: #475569; margin-top: 2px;">
+                    Địa chỉ: <strong><%= customerInfo.dia_chi || 'BHG' %></strong> | Hợp đồng: <strong><%= customerInfo.so_hd || '123' %></strong>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #0d47a1; border-radius: 6px; padding: 12px 16px;">
+                <div style="font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase;">Tổng Khối Lượng Thảm Đã Giao</div>
+                <div style="font-size: 18px; font-weight: bold; color: #0d47a1; margin-top: 4px;">
+                    <%= Number(customerInfo.tong_kg || 0).toLocaleString('vi-VN') %> Kg
+                </div>
+                <div style="font-size: 13px; color: #475569; margin-top: 2px;">
+                    Tổng thể tích: <strong><%= customerInfo.tong_m3 %> m³</strong>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #ea580c; border-radius: 6px; padding: 12px 16px;">
+                <div style="font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase;">Số Chuyến Xe Vận Chuyển</div>
+                <div style="font-size: 18px; font-weight: bold; color: #ea580c; margin-top: 4px;">
+                    <%= customerInfo.so_chuyen %> Chuyến
+                </div>
+                <div style="font-size: 13px; color: #475569; margin-top: 2px;">
+                    Tổng mẻ đã trộn: <strong><%= customerInfo.tong_me %> mẻ</strong>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #7c3aed; border-radius: 6px; padding: 12px 16px;">
+                <div style="font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase;">Liên Hệ & Quản Lý</div>
+                <div style="font-size: 18px; font-weight: bold; color: #7c3aed; margin-top: 4px;">
+                    <%= customerInfo.dai_dien || 'Anh A' %>
+                </div>
+                <div style="font-size: 13px; color: #475569; margin-top: 2px;">
+                    SĐT: <strong><%= customerInfo.dien_thoai || '0913383246' %></strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- BẢNG DANH SÁCH CÁC CHUYẾN XUẤT CỦA KHÁCH HÀNG -->
+        <div class="table-responsive-box">
+            <table class="custom-data-table table-phieus" id="customerTable">
+                <thead>
+                    <tr style="background: #0f172a; color: #ffffff;">
+                        <th style="width: 50px;">STT</th>
+                        <th style="width: 140px;">Thời gian</th>
+                        <th style="width: 90px;">Số Phiếu</th>
+                        <th style="width: 100px;">Biển số xe</th>
+                        <th style="width: 90px;">Lái xe</th>
+                        <th style="width: 70px;">Mác</th>
+                        <th style="width: 70px;">Số mẻ</th>
+                        <th style="width: 80px;">m³/xe</th>
+                        <th>Cốt liệu (Kg)</th>
+                        <th>Nhựa 60/70 (Kg)</th>
+                        <th>Phụ gia (Kg)</th>
+                        <th style="background: #059669; color: #fff;">Khối lượng xuất (Kg)</th>
+                        <th>Tích lũy (Kg)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (customerOrders && customerOrders.length > 0) { %>
+                        <% customerOrders.forEach((o, index) => { %>
+                            <tr>
+                                <td class="text-center font-semibold"><%= index + 1 %></td>
+                                <td class="text-center"><%= o.thoi_gian %></td>
+                                <td class="text-center font-semibold" style="color: #059669;"><%= o.spx %></td>
+                                <td class="text-center font-semibold" style="color: #0d47a1;"><%= o.bien_so %></td>
+                                <td class="text-center"><%= o.nhan_vien || 'A' %></td>
+                                <td class="text-center font-semibold"><%= o.mac %></td>
+                                <td class="text-center"><%= o.sl_me || 6 %></td>
+                                <td class="text-center font-semibold"><%= o.m3xe %></td>
+                                <td class="text-right"><%= o.cot_lieu %></td>
+                                <td class="text-right font-semibold" style="color: #b45309;"><%= o.nhua %></td>
+                                <td class="text-right"><%= o.pg %></td>
+                                <td class="text-right font-semibold" style="background: #ecfdf5; color: #047857;"><%= o.khoi_luong %></td>
+                                <td class="text-right font-semibold"><%= o.tich_luy %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="13" class="empty-state">Khách hàng chưa có phiếu xuất thảm nào.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+                <tfoot style="background: #e2e8f0; font-weight: bold; border-top: 2px solid #94a3b8;">
+                    <tr>
+                        <td colspan="7" class="text-center" style="font-size: 14px; text-transform: uppercase; color: #0f172a;">
+                            TỔNG CỘNG KHÁCH HÀNG <%= customerInfo.ten_kh %>
+                        </td>
+                        <td class="text-center"><%= customerInfo.tong_m3 %></td>
+                        <td class="text-right"><%= customerInfo.tong_cot_lieu %></td>
+                        <td class="text-right" style="color: #b45309;"><%= customerInfo.tong_nhua %></td>
+                        <td class="text-right"><%= customerInfo.tong_pg %></td>
+                        <td class="text-right" style="background: #dcfce7; color: #15803d; font-size: 15px;"><%= Number(customerInfo.tong_kg || 0).toLocaleString('vi-VN') %></td>
+                        <td class="text-right"><%= Number(customerInfo.tong_kg || 0).toLocaleString('vi-VN') %></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    <% } else { %>
+        <div class="empty-state" style="padding: 40px; text-align: center; background: #fff; border-radius: 8px;">
+            <i class="fa-solid fa-circle-exclamation" style="font-size: 36px; color: #94a3b8; margin-bottom: 12px;"></i>
+            <p>Chưa có dữ liệu khách hàng nào được ghi nhận.</p>
+        </div>
+    <% } %>
+</main>
+
+<script>
+    function onSelectCustomer(custName) {
+        window.location.href = '/customer-data?cust=' + encodeURIComponent(custName);
+    }
+
+    function exportCustomerExcel() {
+        const table = document.getElementById('customerTable');
+        if (!table) return;
+        let csv = '\uFEFF';
+        for (let r of table.rows) {
+            let row = [];
+            for (let c of r.cells) {
+                row.push('\"' + c.innerText.replace(/\"/g, '\"\"') + '\"');
+            }
+            csv += row.join(',') + '\r\n';
+        }
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Bao_Cao_Khach_<%= customerInfo ? customerInfo.ten_kh : "MHG" %>_<%= new Date().toISOString().split("T")[0] %>.csv';
+        link.click();
+    }
+</script>
+
+<%- include('partials/footer') %>
