@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    STYLE CHUẨN GIAO DIỆN HỆ THỐNG TRẠM TRỘN BÊ TÔNG ENQ1
    ========================================================= */
 
@@ -159,7 +159,7 @@ body {
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
     padding: 12px 24px;
     color: #0d6efd;
     text-decoration: none;
@@ -210,10 +210,10 @@ body {
 /* ================= MAIN CONTAINER ================= */
 .main-wrapper {
     flex: 1;
-    padding: 18px 24px 40px;
-    max-width: 1440px;
+    padding: 10px 12px 30px;
+    max-width: 100%;
     width: 100%;
-    margin: 0 auto;
+    margin: 0;
 }
 
 /* ================= 6 KPI CARDS (DÙNG CHO MACS, CUSTOMERS, VEHICLES) ================= */
@@ -240,7 +240,7 @@ body {
 .kpi-six-cards {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 14px;
+    gap: 10px;
 }
 
 .kpi-mini-card {
@@ -742,7 +742,7 @@ body {
     }
 }
 
-/* ================= B�O C�O THEO S? PHI?U (CLONE H1) ================= */
+/* ================= B�O C�O THEO S? PHI?U (CLONE H1) ================= */
 .phieu-filter-bar {
     display: flex;
     align-items: center;
@@ -852,4 +852,171 @@ body {
 }
 .btn-action-excel:hover {
     background: #157347;
+}
+
+/* ================= TOÀN BỘ MOBILE RESPONSIVE TỰ ĐỘNG VỪA MÀN HÌNH ================= */
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
+}
+
+.main-wrapper {
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Đảm bảo bảng cuộn ngang mượt mà trên mobile, không đẩy vỡ chiều rộng màn hình */
+.table-responsive-box {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+    box-sizing: border-box;
+}
+
+.custom-data-table {
+    min-width: 760px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    /* Header gọn gàng trên điện thoại */
+    .top-header {
+        padding: 8px 10px;
+    }
+    .plant-title {
+        font-size: 14px;
+        line-height: 1.2;
+    }
+    .company-name {
+        font-size: 11px;
+    }
+    .company-address {
+        font-size: 10px;
+        display: none; /* Ẩn bớt địa chỉ trên điện thoại để header không chiếm chỗ */
+    }
+    .hamburger-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 15px;
+    }
+    .header-right-placeholder {
+        width: 36px;
+    }
+
+    /* Lề trang chính */
+    .main-wrapper {
+        padding: 8px 8px 25px;
+    }
+
+    /* Thanh chọn trạm */
+    .station-select {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+
+    /* 6 Thẻ KPI xếp 2 cột cân đối */
+    .kpi-six-cards {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+    }
+    .kpi-mini-card {
+        padding: 8px 6px;
+        min-height: 82px;
+    }
+    .kpi-title {
+        font-size: 11px;
+    }
+    .kpi-val {
+        font-size: 13px;
+    }
+    .kpi-sub-val {
+        font-size: 11px;
+    }
+
+    /* Tiêu đề trang */
+    .section-main-heading {
+        font-size: 16px;
+        margin: 14px 0 10px;
+    }
+
+    /* Bộ lọc trang Báo cáo theo số phiếu */
+    .phieu-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin: 12px 0;
+    }
+    .input-filter-text,
+    .date-filter-group,
+    .input-filter-date,
+    .btn-green-filter {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .date-filter-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .date-filter-group input {
+        flex: 1;
+        margin-left: 6px;
+    }
+    .btn-green-filter {
+        justify-content: center;
+        padding: 8px;
+    }
+
+    /* Banner trang chủ */
+    .home-banner-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px 14px;
+    }
+    .banner-right-filters {
+        flex-direction: column;
+        gap: 6px;
+    }
+    .banner-right-filters .filter-select {
+        width: 100%;
+    }
+
+    /* 4 Thẻ KPI trang chủ */
+    .home-stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+    }
+
+    /* Bảng trang chủ */
+    .home-tables-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Thanh tìm kiếm */
+    .table-action-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    .search-input-group {
+        width: 100%;
+    }
+    .search-input-group input {
+        width: 100%;
+    }
+
+    /* Footer */
+    .app-footer {
+        padding: 12px 8px;
+        font-size: 11px;
+    }
 }
