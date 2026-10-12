@@ -186,15 +186,45 @@ router.get('/vehicle-data', requireLogin, (req, res) => {
     });
 });
 
-// BÁO CÁO THEO PHIẾU
-router.get('/reports', requireLogin, (req, res) => {
-    res.render('report_view', {
+const PHIEUS_DEFAULT = [
+    { spx: '4311', ngay: '2026-08-04', gio: '16:00:06', ten_kh: 'Phạm Bá Toàn', mac: '250CDC', m3xe: 3.00, khoi_luong: '6145.00', bien_so: '89A-095.14' },
+    { spx: '4310', ngay: '2026-08-04', gio: '15:56:16', ten_kh: 'Phạm Bá Toàn', mac: '250CDC', m3xe: 10.00, khoi_luong: '14064.00', bien_so: '89A-095.14' },
+    { spx: '4309', ngay: '2026-08-04', gio: '15:46:13', ten_kh: 'Phạm Bá Toàn', mac: '250CDC', m3xe: 10.00, khoi_luong: '14064.00', bien_so: '89A-095.14' },
+    { spx: '4308', ngay: '2026-07-28', gio: '20:29:08', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 10.50, khoi_luong: '4853.75', bien_so: '89A-304.63' },
+    { spx: '4307', ngay: '2026-07-28', gio: '20:24:44', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' },
+    { spx: '4306', ngay: '2026-07-28', gio: '20:09:54', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' },
+    { spx: '4305', ngay: '2026-07-28', gio: '19:55:04', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' },
+    { spx: '4304', ngay: '2026-07-28', gio: '19:40:12', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' },
+    { spx: '4303', ngay: '2026-07-28', gio: '19:25:22', ten_kh: 'Phạm Bá Toàn', mac: '300CDC', m3xe: 35.00, khoi_luong: '15088.50', bien_so: '89A-304.63' }
+];
+
+function handlePhieusRoute(req, res) {
+    const liveData = loadData();
+    const liveOrders = (liveData.orders || []).map(o => ({
+        spx: o.spx || '0000',
+        ngay: o.thoi_gian ? o.thoi_gian.split(' ')[1] : new Date().toISOString().split('T')[0],
+        gio: o.thoi_gian ? o.thoi_gian.split(' ')[2] : '',
+        ten_kh: o.ten_kh || 'Khách hàng Trạm ENQ',
+        mac: o.mac || 'MAC250',
+        m3xe: parseFloat(o.m3xe || 0),
+        khoi_luong: o.khoi_luong || '0.00',
+        bien_so: o.bien_so || '89A-000.00'
+    }));
+
+    // Gộp live orders lên đầu, tiếp đến danh sách mặc định
+    const combinedPhieus = [...liveOrders, ...PHIEUS_DEFAULT];
+
+    res.render('phieus', {
         title: 'Báo cáo theo phiếu - Trạm Trộn Asphalt ENQ 01',
-        pageTitle: 'BÁO CÁO THEO PHIẾU',
-        currentPath: '/reports',
-        kpi: KPI_DEFAULT
+        currentPath: '/phieus',
+        kpi: KPI_DEFAULT,
+        phieus: combinedPhieus
     });
-});
+}
+
+// BÁO CÁO THEO PHIẾU (Cả /phieus và /reports đều truy cập được)
+router.get('/phieus', requireLogin, handlePhieusRoute);
+router.get('/reports', requireLogin, handlePhieusRoute);
 
 // NGƯỜI DÙNG
 router.get('/users', requireLogin, (req, res) => {

@@ -1,0 +1,76 @@
+<%- include('partials/header') %>
+
+<main class="main-wrapper">
+    <%- include('partials/kpi_cards') %>
+
+    <h2 class="section-main-heading">BÁO CÁO THEO SỐ PHIẾU</h2>
+
+    <!-- THANH TÌM KIẾM & BỘ LỌC CHUẨN H1 -->
+    <div class="phieu-filter-bar">
+        <input type="text" id="filterInput" class="input-filter-text" placeholder="Phiếu, Lái, Mã khách hàng">
+        <div class="date-filter-group">
+            <label>Từ:</label>
+            <input type="date" id="dateFrom" class="input-filter-date" value="2026-07-01">
+        </div>
+        <div class="date-filter-group">
+            <label>đến</label>
+            <input type="date" id="dateTo" class="input-filter-date" value="2026-10-12">
+        </div>
+        <button id="btnSearchPhieu" class="btn-green-filter">
+            <i class="fa-solid fa-circle" style="font-size: 7px; color: #70e000; vertical-align: middle;"></i>
+            <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+        </button>
+        <button id="btnExportExcel" class="btn-green-filter">
+            <i class="fa-solid fa-file-excel"></i> Xuất Excel
+        </button>
+    </div>
+
+    <!-- BẢNG DỮ LIỆU SỐ PHIẾU CHUẨN H1 -->
+    <div class="table-responsive-box">
+        <table class="custom-data-table table-phieus">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Số Phiếu</th>
+                    <th style="width: 110px;">Ngày</th>
+                    <th style="width: 90px;">Giờ</th>
+                    <th>Tên Khách Hàng</th>
+                    <th style="width: 90px;">Mác</th>
+                    <th style="width: 80px;">m³/xe</th>
+                    <th style="width: 100px;">Khối Lượng</th>
+                    <th style="width: 110px;">Số xe (BKS)</th>
+                    <th style="width: 180px;">Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (typeof phieus !== 'undefined' && phieus.length > 0) { %>
+                    <% phieus.forEach(item => { %>
+                        <tr>
+                            <td class="text-center font-semibold"><%= item.spx %></td>
+                            <td class="text-center"><%= item.ngay %></td>
+                            <td class="text-center"><%= item.gio %></td>
+                            <td><%= item.ten_kh %></td>
+                            <td class="text-center"><%= item.mac %></td>
+                            <td class="text-center"><%= parseFloat(item.m3xe || 0).toFixed(2) %></td>
+                            <td class="text-right font-semibold"><%= typeof item.khoi_luong === 'number' ? item.khoi_luong.toFixed(2) : item.khoi_luong %></td>
+                            <td class="text-center"><%= item.bien_so %></td>
+                            <td class="text-center action-col">
+                                <button class="btn-table-action btn-action-detail">
+                                    <i class="fa-regular fa-file-lines"></i> Chi tiết
+                                </button>
+                                <button class="btn-table-action btn-action-excel">
+                                    <i class="fa-solid fa-file-excel"></i> Xuất Excel
+                                </button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="9" class="empty-state">Không có dữ liệu phiếu nào phù hợp.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<%- include('partials/footer') %>

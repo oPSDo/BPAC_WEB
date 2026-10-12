@@ -223,16 +223,18 @@ body {
 
 .station-selector-row {
     margin-bottom: 14px;
+    width: 100%;
 }
 
 .station-select {
-    padding: 6px 14px;
+    width: 100%;
+    padding: 7px 14px;
     border: 1px solid #ced4da;
     border-radius: 4px;
     font-size: 14px;
     background: #ffffff;
     outline: none;
-    min-width: 180px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 
 .kpi-six-cards {
@@ -245,16 +247,32 @@ body {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 14px 10px;
+    padding: 12px 10px;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    min-height: 94px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .kpi-title {
     font-size: 13px;
     font-weight: 600;
     color: #333333;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+}
+
+.kpi-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
+.kpi-body-bottom {
+    justify-content: flex-end;
+    padding-bottom: 2px;
 }
 
 .kpi-val {
@@ -269,11 +287,6 @@ body {
     font-weight: 600;
     color: #0d6efd;
     margin-top: 2px;
-}
-
-.kpi-single {
-    margin-top: 10px;
-    font-size: 15px;
 }
 
 /* ================= ACTION BAR & SECTION TITLE ================= */
@@ -727,4 +740,116 @@ body {
     .home-stats-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ================= BÁO CÁO THEO S? PHI?U (CLONE H1) ================= */
+.phieu-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 16px 0 16px;
+    flex-wrap: wrap;
+}
+
+.input-filter-text {
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 13px;
+    min-width: 175px;
+    outline: none;
+    background: #ffffff;
+}
+
+.date-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #495057;
+}
+
+.input-filter-date {
+    padding: 5px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+    background: #ffffff;
+}
+
+.btn-green-filter {
+    background: #198754;
+    color: #ffffff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s ease;
+}
+
+.btn-green-filter:hover {
+    background: #157347;
+}
+
+.table-phieus th {
+    background: #0033cc !important;
+    color: #ffffff !important;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 6px;
+    border: 1px solid #002699 !important;
+}
+
+.table-phieus td {
+    padding: 8px 6px;
+    font-size: 13px;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.table-phieus tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.table-phieus tbody tr:hover {
+    background: #f1f3f5;
+}
+
+.action-col {
+    white-space: nowrap;
+}
+
+.btn-table-action {
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 2px;
+}
+
+.btn-action-detail {
+    background: #0d6efd;
+}
+.btn-action-detail:hover {
+    background: #0b5ed7;
+}
+
+.btn-action-excel {
+    background: #198754;
+}
+.btn-action-excel:hover {
+    background: #157347;
 }
