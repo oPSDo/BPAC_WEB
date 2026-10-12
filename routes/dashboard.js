@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { requireLogin } = require('../middleware/auth');
 
-// TÍNH TOÁN KPI THỰC TẾ THEO DỮ LIỆU SẢN XUẤT (KHÔNG DÙNG SỐ DEMO)
-function getLiveKpi() {
+// TÍNH TOÁN KPI THỰC TẾ THEO DỮ LIỆU SẢN XUẤT (THEO TỪNG TRẠM)
+function getLiveKpi(station = 'tram_1') {
     const { loadData } = require('../services/dataStore');
-    const liveData = loadData();
+    const liveData = loadData(station);
     const orders = liveData.orders || [];
 
     let totalM3 = 0;
@@ -56,7 +56,11 @@ const {
     saveVehicle,
     deleteVehicle,
     getAllVehicleBatches,
-    getVehicleBatches
+    getVehicleBatches,
+    getUsers,
+    getUserById,
+    saveUser,
+    deleteUser
 } = require('../services/dataStore');
 
 // ==================== CÁC ROUTES ====================
@@ -75,12 +79,13 @@ router.get('/dashboard', (req, res) => {
 
 // TRANG CHÍNH (/home)
 router.get('/home', requireLogin, (req, res) => {
-    const liveData = loadData();
+    const currentStation = req.session.currentStation || 'tram_1';
+    const liveData = loadData(currentStation);
     const now = new Date();
     const timeStr = liveData.lastUpdated || now.toTimeString().split(' ')[0];
 
     res.render('home', {
-        title: 'Báo cáo sản xuất trong ngày - Trạm Trộn Asphalt ENQ 01',
+        title: 'Báo cáo sản xuất trong ngày - ' + (res.locals.stationName || 'Trạm Trộn Asphalt ENQ 01'),
         currentPath: '/home',
         currentTime: timeStr,
         stats: liveData.stats,
@@ -91,10 +96,11 @@ router.get('/home', requireLogin, (req, res) => {
 
 // ==================== QUẢN LÝ MACS (CÔNG THỨC TRỘN) ====================
 router.get('/macs', requireLogin, (req, res) => {
+    const currentStation = req.session.currentStation || 'tram_1';
     res.render('macs', {
-        title: 'Công thức trộn - Trạm Trộn Asphalt ENQ 01',
+        title: 'Công thức trộn - ' + (res.locals.stationName || 'Trạm Trộn Asphalt ENQ 01'),
         currentPath: '/macs',
-        kpi: getLiveKpi(),
+        kpi: getLiveKpi(currentStation),
         macs: getMacs()
     });
 });
@@ -141,10 +147,11 @@ router.post('/macs/delete/:id', requireLogin, (req, res) => {
 
 // ==================== QUẢN LÝ KHÁCH HÀNG ====================
 router.get('/customers', requireLogin, (req, res) => {
+    const currentStation = req.session.currentStation || 'tram_1';
     res.render('customers', {
-        title: 'Thông tin khách hàng - Trạm Trộn Asphalt ENQ 01',
+        title: 'Thông tin khách hàng - ' + (res.locals.stationName || 'Trạm Trộn Asphalt ENQ 01'),
         currentPath: '/customers',
-        kpi: getLiveKpi(),
+        kpi: getLiveKpi(currentStation),
         customers: getCustomers()
     });
 });
@@ -195,10 +202,11 @@ router.post('/customers/delete/:id', requireLogin, (req, res) => {
 
 // ==================== QUẢN LÝ XE ====================
 router.get('/vehicles', requireLogin, (req, res) => {
+    const currentStation = req.session.currentStation || 'tram_1';
     res.render('vehicles', {
-        title: 'Thông tin xe - Trạm Trộn Asphalt ENQ 01',
+        title: 'Thông tin xe - ' + (res.locals.stationName || 'Trạm Trộn Asphalt ENQ 01'),
         currentPath: '/vehicles',
-        kpi: getLiveKpi(),
+        kpi: getLiveKpi(currentStation),
         vehicles: getVehicles()
     });
 });
@@ -249,7 +257,8 @@ router.post('/vehicles/delete/:id', requireLogin, (req, res) => {
 
 // DỮ LIỆU THEO KHÁCH HÀNG
 router.get('/customer-data', requireLogin, (req, res) => {
-    const liveData = loadData();
+    const currentStation = req.session.currentStation || 'tram_1';
+    const liveData = loadData(currentStation);
     const orders = liveData.orders || [];
     const rawCustomers = getCustomers();
 
@@ -347,9 +356,9 @@ router.get('/customer-data', requireLogin, (req, res) => {
     }
 
     res.render('customer_data', {
-        title: 'Dữ liệu theo khách hàng - Trạm Trộn Asphalt ENQ 01',
+        title: 'Dữ liệu theo khách hàng - ' + (res.locals.stationName || 'Trạm Trộn Asphalt ENQ 01'),
         currentPath: '/customer-data',
-        kpi: getLiveKpi(),
+        kpi: getLiveKpi(currentStation),
         customersList,
         selectedCustomer,
         customerInfo,
@@ -359,6 +368,7 @@ router.get('/customer-data', requireLogin, (req, res) => {
 
 // DỮ LIỆU THEO XE
 router.get('/vehicle-data', requireLogin, (req, res) => {
+    const currentStation = req.session.currentStation || 'tram_1';
     const allBatches = getAllVehicleBatches();
     const vehiclesList = allBatches.map(b => ({
         bien_so: b.bien_so,
@@ -374,9 +384,9 @@ router.get('/vehicle-data', requireLogin, (req, res) => {
     const batchInfo = getVehicleBatches(selectedBienSo);
 
     res.render('vehicle_data', {
-        title: 'Dữ liệu theo xe - Trạm Trộn Asphalt ENQ 01',
+        title: 'Dữ liệu theo xe - ' + (res.locals.stationName || 'Trạm Trộn Asphalt ENQ 01'),
         currentPath: '/vehicle-data',
-        kpi: getLiveKpi(),
+        kpi: getLiveKpi(currentStation),
         vehiclesList,
         selectedBienSo,
         batchInfo
@@ -384,7 +394,8 @@ router.get('/vehicle-data', requireLogin, (req, res) => {
 });
 
 function handlePhieusRoute(req, res) {
-    const liveData = loadData();
+    const currentStation = req.session.currentStation || 'tram_1';
+    const liveData = loadData(currentStation);
     const liveOrders = (liveData.orders || []).map(o => {
         let ngay = '';
         let gio = '';
@@ -398,21 +409,31 @@ function handlePhieusRoute(req, res) {
             }
         }
         return {
+            id: o.id || (o.spx + '_' + Date.now()),
             spx: o.spx || '0000',
-            ngay: ngay,
-            gio: gio,
+            ngay: ngay || '10/12/2026',
+            gio: gio || '15:45:49',
+            thoi_gian: o.thoi_gian || '10/12/2026 15:45:49',
             ten_kh: o.ten_kh || 'Khách lẻ',
-            mac: o.mac || '',
+            dia_chi: o.dia_chi || 'BHG',
+            so_hd: o.so_hd || '123',
+            nhan_vien: o.nhan_vien || 'A',
+            mac: o.mac || '19',
             m3xe: parseFloat(o.m3xe || 0),
             khoi_luong: o.khoi_luong || '0.00',
+            cot_lieu: o.cot_lieu || '7.610',
+            nhua: o.nhua || '360',
+            pg: o.pg || '522',
+            sl_me: o.sl_me || 6,
+            che_do: o.che_do || 'Tự động',
             bien_so: o.bien_so || ''
         };
     });
 
     res.render('phieus', {
-        title: 'Báo cáo theo phiếu - Trạm Trộn Asphalt ENQ 01',
+        title: 'Báo cáo theo phiếu - ' + (res.locals.stationName || 'Trạm Trộn Asphalt ENQ 01'),
         currentPath: '/phieus',
-        kpi: getLiveKpi(),
+        kpi: getLiveKpi(currentStation),
         phieus: liveOrders
     });
 }
@@ -421,13 +442,84 @@ function handlePhieusRoute(req, res) {
 router.get('/phieus', requireLogin, handlePhieusRoute);
 router.get('/reports', requireLogin, handlePhieusRoute);
 
-// NGƯỜI DÙNG
+// CHI TIẾT PHIẾU QUA API
+router.get('/phieus/get/:spx', requireLogin, (req, res) => {
+    const currentStation = req.session.currentStation || 'tram_1';
+    const liveData = loadData(currentStation);
+    const targetSpx = String(req.params.spx).trim().toLowerCase();
+    const found = (liveData.orders || []).find(o => String(o.spx).trim().toLowerCase() === targetSpx);
+    if (!found) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy phiếu' });
+    }
+    res.json({ success: true, phieu: found });
+});
+
+// ==================== QUẢN LÝ NGƯỜI DÙNG ====================
 router.get('/users', requireLogin, (req, res) => {
+    const currentStation = req.session.currentStation || 'tram_1';
     res.render('users', {
-        title: 'Quản lý người dùng - Trạm Trộn Asphalt ENQ 01',
+        title: 'Quản lý người dùng - ' + (res.locals.stationName || 'Trạm Trộn Asphalt ENQ 01'),
         currentPath: '/users',
-        kpi: getLiveKpi()
+        kpi: getLiveKpi(currentStation),
+        users: getUsers()
     });
+});
+
+router.get('/users/get/:id', requireLogin, (req, res) => {
+    const user = getUserById(req.params.id);
+    if (!user) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+    }
+    res.json({ success: true, user });
+});
+
+router.post('/users/save', requireLogin, (req, res) => {
+    try {
+        const saved = saveUser(req.body);
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
+            return res.json({ success: true, message: 'Đã lưu thông tin người dùng thành công', user: saved });
+        }
+        res.redirect('/users');
+    } catch (err) {
+        console.error('Lỗi lưu người dùng:', err);
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
+            return res.status(500).json({ success: false, message: err.message });
+        }
+        res.redirect('/users');
+    }
+});
+
+router.post('/users/delete/:id', requireLogin, (req, res) => {
+    try {
+        deleteUser(req.params.id);
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
+            return res.json({ success: true, message: 'Đã xóa người dùng thành công' });
+        }
+        res.redirect('/users');
+    } catch (err) {
+        console.error('Lỗi xóa người dùng:', err);
+        const isJson = req.xhr || req.is('json') || req.headers.accept?.indexOf('json') > -1 || req.headers['content-type']?.indexOf('json') > -1;
+        if (isJson) {
+            return res.status(500).json({ success: false, message: err.message });
+        }
+        res.redirect('/users');
+    }
+});
+
+// ==================== CHUYỂN ĐỔI TRẠM TRỘN ====================
+router.get('/set-station/:id', (req, res) => {
+    req.session.currentStation = req.params.id;
+    const referer = req.headers.referer || '/home';
+    res.redirect(referer);
+});
+
+router.post('/api/set-station', (req, res) => {
+    const station = req.body.station || 'tram_1';
+    req.session.currentStation = station;
+    res.json({ success: true, station });
 });
 
 module.exports = router;

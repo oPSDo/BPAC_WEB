@@ -36,6 +36,13 @@ app.use(flash());
 
 // Biến global cho views
 app.use((req, res, next) => {
+    if (req.query.station) {
+        req.session.currentStation = String(req.query.station).trim();
+    }
+    const currentStation = req.session.currentStation || 'tram_1';
+    req.session.currentStation = currentStation;
+    res.locals.currentStation = currentStation;
+    res.locals.stationName = (currentStation === 'tram_2' || currentStation.includes('02')) ? 'Trạm Trộn Asphalt ENQ 02' : 'Trạm Trộn Asphalt ENQ 01';
     res.locals.user = req.session.user || null;
     res.locals.error = req.flash('error');
     res.locals.success = req.flash('success');

@@ -7,27 +7,27 @@
 
     <!-- THANH TÌM KIẾM & BỘ LỌC CHUẨN H1 -->
     <div class="phieu-filter-bar">
-        <input type="text" id="filterInput" class="input-filter-text" placeholder="Phiếu, Lái, Mã khách hàng">
+        <input type="text" id="filterInput" class="input-filter-text" placeholder="Phiếu, Lái xe, Khách hàng, BKS..." onkeyup="filterPhieusTable()">
         <div class="date-filter-group">
             <label>Từ:</label>
-            <input type="date" id="dateFrom" class="input-filter-date" value="2026-07-01">
+            <input type="date" id="dateFrom" class="input-filter-date" value="2026-07-01" onchange="filterPhieusTable()">
         </div>
         <div class="date-filter-group">
             <label>đến</label>
-            <input type="date" id="dateTo" class="input-filter-date" value="2026-10-12">
+            <input type="date" id="dateTo" class="input-filter-date" value="2026-10-12" onchange="filterPhieusTable()">
         </div>
-        <button id="btnSearchPhieu" class="btn-green-filter">
+        <button id="btnSearchPhieu" class="btn-green-filter" onclick="filterPhieusTable()">
             <i class="fa-solid fa-circle" style="font-size: 7px; color: #70e000; vertical-align: middle;"></i>
             <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
         </button>
-        <button id="btnExportExcel" class="btn-green-filter">
-            <i class="fa-solid fa-file-excel"></i> Xuất Excel
+        <button id="btnExportExcel" class="btn-green-filter" onclick="exportAllPhieusTable()">
+            <i class="fa-solid fa-file-excel"></i> Xuất Excel toàn bộ
         </button>
     </div>
 
     <!-- BẢNG DỮ LIỆU SỐ PHIẾU CHUẨN H1 -->
     <div class="table-responsive-box">
-        <table class="custom-data-table table-phieus">
+        <table class="custom-data-table table-phieus" id="tablePhieus">
             <thead>
                 <tr>
                     <th style="width: 80px;">Số Phiếu</th>
@@ -36,7 +36,7 @@
                     <th>Tên Khách Hàng</th>
                     <th style="width: 90px;">Mác</th>
                     <th style="width: 80px;">m³/xe</th>
-                    <th style="width: 100px;">Khối Lượng</th>
+                    <th style="width: 100px;">Khối Lượng (Kg)</th>
                     <th style="width: 110px;">Số xe (BKS)</th>
                     <th style="width: 180px;">Hành Động</th>
                 </tr>
@@ -44,20 +44,20 @@
             <tbody>
                 <% if (typeof phieus !== 'undefined' && phieus.length > 0) { %>
                     <% phieus.forEach(item => { %>
-                        <tr>
-                            <td class="text-center font-semibold"><%= item.spx %></td>
+                        <tr id="row-phieu-<%= item.spx %>">
+                            <td class="text-center font-semibold" style="color: #059669;"><%= item.spx %></td>
                             <td class="text-center"><%= item.ngay %></td>
                             <td class="text-center"><%= item.gio %></td>
-                            <td><%= item.ten_kh %></td>
-                            <td class="text-center"><%= item.mac %></td>
-                            <td class="text-center"><%= parseFloat(item.m3xe || 0).toFixed(2) %></td>
-                            <td class="text-right font-semibold"><%= typeof item.khoi_luong === 'number' ? item.khoi_luong.toFixed(2) : item.khoi_luong %></td>
-                            <td class="text-center"><%= item.bien_so %></td>
+                            <td><strong><%= item.ten_kh %></strong></td>
+                            <td class="text-center font-semibold"><%= item.mac %></td>
+                            <td class="text-center font-semibold"><%= parseFloat(item.m3xe || 0).toFixed(1) %></td>
+                            <td class="text-right font-semibold" style="color: #15803d;"><%= typeof item.khoi_luong === 'number' ? item.khoi_luong.toLocaleString('vi-VN') : item.khoi_luong %></td>
+                            <td class="text-center font-semibold" style="color: #0d47a1;"><%= item.bien_so %></td>
                             <td class="text-center action-col">
-                                <button class="btn-table-action btn-action-detail">
+                                <button class="btn-table-action btn-action-detail" onclick="showPhieuDetail('<%= item.spx %>')">
                                     <i class="fa-regular fa-file-lines"></i> Chi tiết
                                 </button>
-                                <button class="btn-table-action btn-action-excel">
+                                <button class="btn-table-action btn-action-excel" onclick="exportSinglePhieu('<%= item.spx %>')">
                                     <i class="fa-solid fa-file-excel"></i> Xuất Excel
                                 </button>
                             </td>
@@ -65,12 +65,249 @@
                     <% }) %>
                 <% } else { %>
                     <tr>
-                        <td colspan="9" class="empty-state">Không có dữ liệu phiếu nào phù hợp.</td>
+                        <td colspan="9" class="empty-state">Không có dữ liệu phiếu nào phù hợp với trạm đang chọn.</td>
                     </tr>
                 <% } %>
             </tbody>
         </table>
     </div>
+
+    <!-- MODAL XEM CHI TIẾT PHIẾU XUẤT XƯỞNG -->
+    <div id="phieuModal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 680px;">
+            <div class="modal-header" style="background: #0f172a; color: #fff;">
+                <h3 id="modalPhieuTitle" style="color: #fff; margin: 0;">
+                    <i class="fa-regular fa-file-lines" style="color: #38bdf8;"></i> Chi Tiết Phiếu Xuất Xưởng
+                </h3>
+                <button type="button" class="modal-close-btn" onclick="closePhieuModal()" style="color: #fff;">&times;</button>
+            </div>
+            
+            <div class="modal-body" style="padding: 20px;">
+                <!-- KHỐI HEADER PHIẾU -->
+                <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <span style="font-size: 13px; color: #64748b;">MÃ PHIẾU XUẤT:</span>
+                            <span id="dtSpx" style="font-size: 22px; font-weight: bold; color: #059669; margin-left: 6px;"></span>
+                        </div>
+                        <div>
+                            <span style="font-size: 13px; color: #64748b;">Thời gian:</span>
+                            <strong id="dtThoiGian" style="color: #1e293b;"></strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LƯỚI THÔNG TIN VẬN CHUYỂN & KHÁCH HÀNG -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; background: #f8fafc; padding: 14px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <div>
+                        <span style="color: #64748b; font-size: 12px; display: block;">KHÁCH HÀNG:</span>
+                        <strong id="dtKhachHang" style="color: #0f172a; font-size: 15px;"></strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; font-size: 12px; display: block;">ĐỊA CHỈ CÔNG TRÌNH:</span>
+                        <strong id="dtDiaChi" style="color: #0f172a;"></strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; font-size: 12px; display: block;">SỐ HỢP ĐỒNG:</span>
+                        <strong id="dtSoHd" style="color: #0f172a;"></strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; font-size: 12px; display: block;">MÁC BÊ TÔNG NHỰA:</span>
+                        <strong id="dtMac" style="color: #ea580c; font-size: 15px;"></strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; font-size: 12px; display: block;">BIỂN SỐ XE CHỞ:</span>
+                        <strong id="dtBienSo" style="color: #0d47a1; font-size: 15px;"></strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; font-size: 12px; display: block;">LÁI XE / VẬN HÀNH:</span>
+                        <strong id="dtLaiXe" style="color: #0f172a;"></strong>
+                    </div>
+                </div>
+
+                <!-- BẢNG KHỐI LƯỢNG PHỐI LIỆU XUẤT XƯỞNG -->
+                <h4 style="margin: 0 0 10px 0; color: #1e293b; font-size: 14px; text-transform: uppercase;">
+                    <i class="fa-solid fa-scale-balanced" style="color: #0d47a1;"></i> Khối Lượng Cân Trộn Thực Tế (Asphalt)
+                </h4>
+                <div class="table-responsive-box" style="margin-bottom: 16px;">
+                    <table class="custom-data-table" style="font-size: 13px;">
+                        <thead>
+                            <tr style="background: #f1f5f9;">
+                                <th>Thành phần phối liệu</th>
+                                <th style="text-align: right;">Khối lượng cân (Kg)</th>
+                                <th>Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Cốt liệu đá nóng (CL1 - CL5)</td>
+                                <td style="text-align: right; font-weight: bold;" id="dtCotLieu">0</td>
+                                <td>Đá sấy nóng 150-170°C</td>
+                            </tr>
+                            <tr>
+                                <td>Nhựa đường đặc 60/70 (Bitumen)</td>
+                                <td style="text-align: right; font-weight: bold; color: #b45309;" id="dtNhua">0</td>
+                                <td>Nhựa nung chảy 145-160°C</td>
+                            </tr>
+                            <tr>
+                                <td>Bột khoáng & Phụ gia (PG-F, PG-D, SBS)</td>
+                                <td style="text-align: right; font-weight: bold; color: #0284c7;" id="dtPhuGia">0</td>
+                                <td>Chất độn bột đá mịn + SBS</td>
+                            </tr>
+                            <tr style="background: #dcfce7; font-weight: bold; font-size: 14px;">
+                                <td style="color: #15803d;">TỔNG KHỐI LƯỢNG THẢM XUẤT:</td>
+                                <td style="text-align: right; color: #15803d;" id="dtTongKg">0 Kg</td>
+                                <td style="color: #15803d;" id="dtM3">~ 0 m³ (Tỷ trọng 2.4 T/m³)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #eff6ff; padding: 10px 14px; border-radius: 6px; font-size: 13px;">
+                    <span>Tổng số mẻ: <strong id="dtSlMe">6</strong> mẻ</span>
+                    <span>Chế độ: <strong id="dtCheDo">Tự động (WinCC)</strong></span>
+                    <a id="dtLinkVehicleBatches" href="/vehicle-data" style="color: #0d47a1; font-weight: 600; text-decoration: underline;">
+                        <i class="fa-solid fa-arrow-right"></i> Xem chi tiết từng mẻ xe này
+                    </a>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding: 12px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+                <div>
+                    <button type="button" class="btn-green-filter" onclick="printPhieuModal()">
+                        <i class="fa-solid fa-print"></i> In phiếu
+                    </button>
+                    <button type="button" class="btn-green-filter" onclick="exportCurrentPhieuModal()">
+                        <i class="fa-solid fa-file-excel"></i> Xuất Excel phiếu
+                    </button>
+                </div>
+                <button type="button" class="btn-modal-cancel" onclick="closePhieuModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
 </main>
+
+<script>
+    const phieusData = <%- JSON.stringify(phieus || []) %>;
+    let currentViewingPhieu = null;
+
+    function showPhieuDetail(spx) {
+        const found = phieusData.find(p => String(p.spx).trim().toLowerCase() === String(spx).trim().toLowerCase());
+        if (!found) {
+            alert('Không tìm thấy thông tin phiếu ' + spx);
+            return;
+        }
+
+        currentViewingPhieu = found;
+        document.getElementById('dtSpx').textContent = found.spx;
+        document.getElementById('dtThoiGian').textContent = found.thoi_gian || (found.ngay + ' ' + found.gio);
+        document.getElementById('dtKhachHang').textContent = found.ten_kh || 'Khách lẻ';
+        document.getElementById('dtDiaChi').textContent = found.dia_chi || 'BHG';
+        document.getElementById('dtSoHd').textContent = found.so_hd || '123';
+        document.getElementById('dtMac').textContent = found.mac || '19';
+        document.getElementById('dtBienSo').textContent = found.bien_so || '';
+        document.getElementById('dtLaiXe').textContent = found.nhan_vien || 'A';
+        document.getElementById('dtCotLieu').textContent = found.cot_lieu || '7.610';
+        document.getElementById('dtNhua').textContent = found.nhua || '360';
+        document.getElementById('dtPhuGia').textContent = found.pg || '522';
+        document.getElementById('dtTongKg').textContent = (typeof found.khoi_luong === 'number' ? found.khoi_luong.toLocaleString('vi-VN') : found.khoi_luong) + ' Kg';
+        document.getElementById('dtM3').textContent = '~ ' + parseFloat(found.m3xe || 0).toFixed(1) + ' m³ (Tỷ trọng 2.4 T/m³)';
+        document.getElementById('dtSlMe').textContent = found.sl_me || '6';
+        document.getElementById('dtCheDo').textContent = found.che_do || 'Tự động';
+
+        const link = document.getElementById('dtLinkVehicleBatches');
+        if (link && found.bien_so) {
+            link.href = '/vehicle-data?bien_so=' + encodeURIComponent(found.bien_so);
+            link.style.display = 'inline';
+        } else if (link) {
+            link.style.display = 'none';
+        }
+
+        document.getElementById('phieuModal').classList.add('show');
+    }
+
+    function closePhieuModal() {
+        document.getElementById('phieuModal').classList.remove('show');
+    }
+
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('phieuModal');
+        if (e.target === modal) {
+            closePhieuModal();
+        }
+    });
+
+    function printPhieuModal() {
+        window.print();
+    }
+
+    function exportSinglePhieu(spx) {
+        const found = phieusData.find(p => String(p.spx).trim().toLowerCase() === String(spx).trim().toLowerCase());
+        if (!found) return;
+
+        let csv = '\uFEFF';
+        csv += 'PHIẾU XUẤT XƯỞNG BÊ TÔNG NHỰA ASPHALT\r\n';
+        csv += 'Số phiếu,' + found.spx + '\r\n';
+        csv += 'Thời gian,' + (found.thoi_gian || (found.ngay + ' ' + found.gio)) + '\r\n';
+        csv += 'Khách hàng,' + (found.ten_kh || '') + '\r\n';
+        csv += 'Địa chỉ công trình,' + (found.dia_chi || '') + '\r\n';
+        csv += 'Số hợp đồng,' + (found.so_hd || '') + '\r\n';
+        csv += 'Biển số xe,' + (found.bien_so || '') + '\r\n';
+        csv += 'Lái xe,' + (found.nhan_vien || '') + '\r\n';
+        csv += 'Mác nhựa,' + (found.mac || '') + '\r\n';
+        csv += 'Số mẻ,' + (found.sl_me || 6) + '\r\n';
+        csv += 'Thể tích m3,' + found.m3xe + '\r\n';
+        csv += 'Cốt liệu (Kg),' + found.cot_lieu + '\r\n';
+        csv += 'Nhựa đường 60/70 (Kg),' + found.nhua + '\r\n';
+        csv += 'Phụ gia (Kg),' + found.pg + '\r\n';
+        csv += 'Tổng khối lượng thảm (Kg),' + found.khoi_luong + '\r\n';
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Phieu_Xuat_Asphalt_' + found.spx + '.csv';
+        link.click();
+    }
+
+    function exportCurrentPhieuModal() {
+        if (currentViewingPhieu) {
+            exportSinglePhieu(currentViewingPhieu.spx);
+        }
+    }
+
+    function exportAllPhieusTable() {
+        const table = document.getElementById('tablePhieus');
+        if (!table) return;
+        let csv = '\uFEFF';
+        for (let r of table.rows) {
+            let row = [];
+            // Skip action column on header and body
+            const cellCount = r.cells.length;
+            for (let i = 0; i < cellCount - 1; i++) {
+                row.push('\"' + r.cells[i].innerText.replace(/\"/g, '\"\"') + '\"');
+            }
+            csv += row.join(',') + '\r\n';
+        }
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Bao_Cao_Theo_So_Phieu_' + new Date().toISOString().split('T')[0] + '.csv';
+        link.click();
+    }
+
+    function filterPhieusTable() {
+        const q = document.getElementById('filterInput').value.toLowerCase().trim();
+        const fromVal = document.getElementById('dateFrom').value;
+        const toVal = document.getElementById('dateTo').value;
+
+        const rows = document.querySelectorAll('#tablePhieus tbody tr');
+        rows.forEach(r => {
+            if (r.querySelector('.empty-state')) return;
+            const text = r.innerText.toLowerCase();
+            const matchQuery = !q || text.includes(q);
+            r.style.display = matchQuery ? '' : 'none';
+        });
+    }
+</script>
 
 <%- include('partials/footer') %>

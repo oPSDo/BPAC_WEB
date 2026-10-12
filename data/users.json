@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "stt": 1,
+    "username": "admin",
+    "fullname": "Quản trị viên Hệ thống",
+    "role": "admin",
+    "tram": "Tất cả các trạm",
+    "active": 1,
+    "email": "admin@enq.com.vn",
+    "phone": "0913383246",
+    "created_at": "2026-10-12"
+  },
+  {
+    "id": "2",
+    "stt": 2,
+    "username": "admindemo",
+    "fullname": "Quản trị viên Demo",
+    "role": "admin",
+    "tram": "Trạm Trộn Asphalt ENQ 01",
+    "active": 1,
+    "email": "demo@enq.com.vn",
+    "phone": "0912888729",
+    "created_at": "2026-10-12"
+  },
+  {
+    "id": "3",
+    "stt": 3,
+    "username": "operator01",
+    "fullname": "Kỹ sư vận hành Trạm 01",
+    "role": "operator",
+    "tram": "Trạm Trộn Asphalt ENQ 01",
+    "active": 1,
+    "email": "operator01@enq.com.vn",
+    "phone": "0988888888",
+    "created_at": "2026-10-12"
+  },
+  {
+    "id": "4",
+    "stt": 4,
+    "username": "operator02",
+    "fullname": "Kỹ sư vận hành Trạm 02",
+    "role": "operator",
+    "tram": "Trạm Trộn Asphalt ENQ 02",
+    "active": 1,
+    "email": "operator02@enq.com.vn",
+    "phone": "0977777777",
+    "created_at": "2026-10-12"
+  }
+]

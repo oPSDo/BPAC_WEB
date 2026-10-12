@@ -6,6 +6,7 @@ const MACS_FILE = path.join(__dirname, '..', 'data', 'macs.json');
 const CUSTOMERS_FILE = path.join(__dirname, '..', 'data', 'customers.json');
 const VEHICLES_FILE = path.join(__dirname, '..', 'data', 'vehicles.json');
 const VEHICLE_BATCHES_FILE = path.join(__dirname, '..', 'data', 'vehicle_batches.json');
+const USERS_FILE = path.join(__dirname, '..', 'data', 'users.json');
 
 // Dữ liệu mặc định ban đầu cho Trạm trộn Asphalt ENQ 01
 const MACS_DEFAULT = [
@@ -221,15 +222,8 @@ if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }
 
-function loadData() {
-    if (fs.existsSync(DATA_FILE)) {
-        try {
-            return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-        } catch (e) {
-            console.error('Error reading production data file:', e.message);
-        }
-    }
-    return {
+function loadData(station = 'tram_1') {
+    let raw = {
         stats: {
             orders_count: 0,
             customers_count: 0,
@@ -239,6 +233,84 @@ function loadData() {
         orders: [],
         topCustomers: [],
         lastUpdated: new Date().toLocaleTimeString('vi-VN')
+    };
+
+    if (fs.existsSync(DATA_FILE)) {
+        try {
+            raw = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+        } catch (e) {
+            console.error('Error reading production data file:', e.message);
+        }
+    }
+
+    const cleanStation = String(station || 'tram_1').toLowerCase();
+    
+    // Nếu chọn Trạm Trộn 02
+    if (cleanStation === 'tram_2' || cleanStation.includes('02') || cleanStation.includes('tram2')) {
+        const orders2 = (raw.orders || []).filter(o => o.station === 'tram_2' || o.station === 'ENQ_02' || o.station === 'BPAC_Tram_02');
+        if (orders2.length === 0) {
+            return {
+                stationName: 'Trạm Trộn Asphalt ENQ 02',
+                stationId: 'tram_2',
+                stats: {
+                    orders_count: 0,
+                    customers_count: 0,
+                    total_m3: '0,0',
+                    total_kg: '0,0'
+                },
+                orders: [],
+                topCustomers: [],
+                lastUpdated: 'Chưa có mẻ trộn hôm nay'
+            };
+        }
+        let totalKg = 0;
+        let totalM3 = 0;
+        const custMap = {};
+        orders2.forEach(o => {
+            totalKg += (o.kg_raw || 0);
+            totalM3 += (o.m3_raw || 0);
+            const cName = o.ten_kh || 'Khách lẻ';
+            custMap[cName] = (custMap[cName] || 0) + (o.m3_raw || 0);
+        });
+        return {
+            stationName: 'Trạm Trộn Asphalt ENQ 02',
+            stationId: 'tram_2',
+            stats: {
+                orders_count: orders2.length,
+                customers_count: Object.keys(custMap).length,
+                total_m3: totalM3.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+                total_kg: totalKg.toLocaleString('vi-VN')
+            },
+            orders: orders2,
+            topCustomers: Object.keys(custMap).map(k => ({ name: k, m3: custMap[k].toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })),
+            lastUpdated: raw.lastUpdated || new Date().toLocaleTimeString('vi-VN')
+        };
+    }
+
+    // Mặc định: Trạm Trộn Asphalt ENQ 01
+    const orders1 = (raw.orders || []).filter(o => !o.station || o.station === 'tram_1' || o.station === 'ENQ_01' || o.station === 'BPAC_Tram_01');
+    let totalKg = 0;
+    let totalM3 = 0;
+    const custMap = {};
+    orders1.forEach(o => {
+        totalKg += (o.kg_raw || 0);
+        totalM3 += (o.m3_raw || 0);
+        const cName = o.ten_kh || 'Khách lẻ';
+        custMap[cName] = (custMap[cName] || 0) + (o.m3_raw || 0);
+    });
+
+    return {
+        stationName: 'Trạm Trộn Asphalt ENQ 01',
+        stationId: 'tram_1',
+        stats: {
+            orders_count: orders1.length,
+            customers_count: Object.keys(custMap).length,
+            total_m3: totalM3.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+            total_kg: totalKg.toLocaleString('vi-VN')
+        },
+        orders: orders1,
+        topCustomers: Object.keys(custMap).map(k => ({ name: k, m3: custMap[k].toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) })),
+        lastUpdated: raw.lastUpdated || new Date().toLocaleTimeString('vi-VN')
     };
 }
 
@@ -411,6 +483,79 @@ function saveVehicleBatches(batchData) {
     return formatted;
 }
 
+// ----------------- USERS CRUD -----------------
+const USERS_DEFAULT = [
+    {
+        id: '1', stt: 1, username: 'admin', fullname: 'Quản trị viên Hệ thống',
+        role: 'admin', tram: 'Tất cả các trạm', active: 1, email: 'admin@enq.com.vn',
+        phone: '0913383246', created_at: '2026-10-12'
+    },
+    {
+        id: '2', stt: 2, username: 'admindemo', fullname: 'Quản trị viên Demo',
+        role: 'admin', tram: 'Trạm Trộn Asphalt ENQ 01', active: 1, email: 'demo@enq.com.vn',
+        phone: '0912888729', created_at: '2026-10-12'
+    },
+    {
+        id: '3', stt: 3, username: 'operator01', fullname: 'Kỹ sư vận hành Trạm 01',
+        role: 'operator', tram: 'Trạm Trộn Asphalt ENQ 01', active: 1, email: 'operator01@enq.com.vn',
+        phone: '0988888888', created_at: '2026-10-12'
+    },
+    {
+        id: '4', stt: 4, username: 'operator02', fullname: 'Kỹ sư vận hành Trạm 02',
+        role: 'operator', tram: 'Trạm Trộn Asphalt ENQ 02', active: 1, email: 'operator02@enq.com.vn',
+        phone: '0977777777', created_at: '2026-10-12'
+    }
+];
+
+function getUsers() {
+    return readJsonFile(USERS_FILE, USERS_DEFAULT);
+}
+
+function getUserById(id) {
+    const list = getUsers();
+    return list.find(u => String(u.id) === String(id)) || null;
+}
+
+function saveUser(userData) {
+    const list = getUsers();
+    const id = userData.id ? String(userData.id).trim() : '';
+
+    if (id) {
+        const idx = list.findIndex(u => String(u.id) === id);
+        if (idx >= 0) {
+            list[idx] = {
+                ...list[idx],
+                ...userData,
+                id: list[idx].id,
+                stt: list[idx].stt || (idx + 1),
+                active: userData.active !== undefined ? Number(userData.active) : list[idx].active
+            };
+            writeJsonFile(USERS_FILE, list);
+            return list[idx];
+        }
+    }
+
+    const nextStt = list.length > 0 ? Math.max(...list.map(u => parseInt(u.stt) || 0)) + 1 : 1;
+    const newId = userData.id || String(Date.now());
+    const newUser = {
+        ...userData,
+        id: String(newId),
+        stt: nextStt,
+        active: userData.active !== undefined ? Number(userData.active) : 1,
+        created_at: userData.created_at || new Date().toISOString().split('T')[0]
+    };
+    list.push(newUser);
+    writeJsonFile(USERS_FILE, list);
+    return newUser;
+}
+
+function deleteUser(id) {
+    const list = getUsers();
+    const filtered = list.filter(u => String(u.id) !== String(id));
+    writeJsonFile(USERS_FILE, filtered);
+    return true;
+}
+
 module.exports = {
     loadData,
     saveData,
@@ -430,6 +575,10 @@ module.exports = {
     deleteVehicle,
     getAllVehicleBatches,
     getVehicleBatches,
-    saveVehicleBatches
+    saveVehicleBatches,
+    getUsers,
+    getUserById,
+    saveUser,
+    deleteUser
 };
 
