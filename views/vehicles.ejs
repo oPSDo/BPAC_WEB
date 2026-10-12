@@ -10,13 +10,13 @@
             <i class="fa-solid fa-plus"></i> Thêm
         </button>
         <div class="search-input-group">
-            <input type="text" placeholder="Tìm xe...">
-            <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+            <input type="text" id="searchInput" placeholder="Tìm xe, lái xe..." onkeyup="searchVehicleTable()">
+            <button onclick="searchVehicleTable()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
         </div>
     </div>
 
     <div class="table-responsive-box">
-        <table class="custom-data-table">
+        <table class="custom-data-table" id="vehicleTable">
             <thead>
                 <tr>
                     <th style="width: 80px;">Mã LX</th>
@@ -30,12 +30,12 @@
             <tbody>
                 <% if (vehicles && vehicles.length > 0) { %>
                     <% vehicles.forEach(v => { %>
-                        <tr>
+                        <tr id="row-veh-<%= v.id %>">
                             <td><%= v.ma_lx %></td>
                             <td><strong><%= v.ten_lai_xe %></strong></td>
                             <td><span style="font-weight: 600; color: #0d47a1;"><%= v.bien_so_xe %></span></td>
-                            <td><%= v.dien_thoai %></td>
-                            <td><%= v.thong_tin %></td>
+                            <td><%= v.dien_thoai || '' %></td>
+                            <td><%= v.thong_tin || '' %></td>
                             <td>
                                 <button class="btn-action-edit" onclick="editVehicle('<%= v.id %>')"><i class="fa-solid fa-pen"></i> Sửa</button>
                                 <button class="btn-action-del" onclick="deleteVehicle('<%= v.id %>')"><i class="fa-solid fa-trash-can"></i> Xóa</button>
@@ -57,6 +57,162 @@
         <span class="page-btn active">1 / 1</span>
         <button class="page-btn">Tiếp &raquo;</button>
     </div>
+
+    <!-- MODAL THÊM / SỬA XE -->
+    <div id="vehicleModal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 540px;">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm Thông Tin Xe</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal()">&minus;</button>
+            </div>
+            <form id="vehicleForm" onsubmit="saveVehicleForm(event)">
+                <input type="hidden" id="vehicleId" name="id" value="">
+
+                <div class="form-control-item">
+                    <label for="ma_lx">Mã lái xe (Mã LX):</label>
+                    <input type="number" id="ma_lx" name="ma_lx" placeholder="Tự động tăng hoặc nhập mã">
+                </div>
+
+                <div class="form-control-item">
+                    <label for="ten_lai_xe">*Tên lái xe:</label>
+                    <input type="text" id="ten_lai_xe" name="ten_lai_xe" placeholder="Họ và tên lái xe" required>
+                </div>
+
+                <div class="form-control-item">
+                    <label for="bien_so_xe">*Biển số xe:</label>
+                    <input type="text" id="bien_so_xe" name="bien_so_xe" placeholder="VD: 89A-095.14" required>
+                </div>
+
+                <div class="form-control-item">
+                    <label for="dien_thoai">Số điện thoại:</label>
+                    <input type="text" id="dien_thoai" name="dien_thoai" placeholder="VD: 0912345678">
+                </div>
+
+                <div class="form-control-item">
+                    <label for="thong_tin">Thông tin / Đội xe:</label>
+                    <input type="text" id="thong_tin" name="thong_tin" placeholder="VD: Đội xe sửa chữa, Đội xe GHT...">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" onclick="closeModal()">Đóng</button>
+                    <button type="submit" class="btn-modal-save"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </main>
+
+<script>
+    const vehiclesData = <%- JSON.stringify(vehicles || []) %>;
+
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Thêm Thông Tin Xe';
+        document.getElementById('vehicleForm').reset();
+        document.getElementById('vehicleId').value = '';
+        
+        // Gợi ý mã LX tiếp theo
+        let maxMa = 0;
+        vehiclesData.forEach(v => {
+            const num = parseInt(v.ma_lx);
+            if (!isNaN(num) && num > maxMa) maxMa = num;
+        });
+        document.getElementById('ma_lx').value = maxMa + 1;
+
+        document.getElementById('vehicleModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('vehicleModal').classList.remove('show');
+    }
+
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('vehicleModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    function editVehicle(id) {
+        const found = vehiclesData.find(v => String(v.id) === String(id));
+        if (!found) {
+            alert('Không tìm thấy thông tin xe cần sửa!');
+            return;
+        }
+
+        document.getElementById('modalTitle').textContent = 'Sửa Thông Tin Xe: ' + found.bien_so_xe;
+        document.getElementById('vehicleId').value = found.id || '';
+        document.getElementById('ma_lx').value = found.ma_lx || '';
+        document.getElementById('ten_lai_xe').value = found.ten_lai_xe || '';
+        document.getElementById('bien_so_xe').value = found.bien_so_xe || '';
+        document.getElementById('dien_thoai').value = found.dien_thoai || '';
+        document.getElementById('thong_tin').value = found.thong_tin || '';
+
+        document.getElementById('vehicleModal').classList.add('show');
+    }
+
+    function saveVehicleForm(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        fetch('/vehicles/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(payload.id ? 'Cập nhật xe thành công!' : 'Thêm mới xe thành công!');
+                closeModal();
+                location.reload();
+            } else {
+                alert('Lỗi: ' + (data.message || 'Không thể lưu dữ liệu'));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Lỗi kết nối khi lưu thông tin xe!');
+        });
+    }
+
+    function deleteVehicle(id) {
+        if (!confirm('Bạn có chắc chắn muốn xóa xe này không?')) {
+            return;
+        }
+
+        fetch('/vehicles/delete/' + encodeURIComponent(id), {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Đã xóa thông tin xe thành công!');
+                location.reload();
+            } else {
+                alert('Lỗi: ' + (data.message || 'Không thể xóa'));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Lỗi kết nối khi gửi yêu cầu xóa!');
+        });
+    }
+
+    function searchVehicleTable() {
+        const val = document.getElementById('searchInput').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#vehicleTable tbody tr');
+        rows.forEach(r => {
+            if (r.querySelector('.empty-state')) return;
+            const text = r.innerText.toLowerCase();
+            r.style.display = text.includes(val) ? '' : 'none';
+        });
+    }
+</script>
 
 <%- include('partials/footer') %>

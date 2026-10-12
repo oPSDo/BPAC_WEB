@@ -10,13 +10,13 @@
             <i class="fa-solid fa-plus"></i> Thêm
         </button>
         <div class="search-input-group">
-            <input type="text" placeholder="Tìm khách hàng...">
-            <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+            <input type="text" id="searchInput" placeholder="Tìm khách hàng..." onkeyup="searchCustomerTable()">
+            <button onclick="searchCustomerTable()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
         </div>
     </div>
 
     <div class="table-responsive-box">
-        <table class="custom-data-table">
+        <table class="custom-data-table" id="customerTable">
             <thead>
                 <tr>
                     <th>STT</th>
@@ -40,22 +40,22 @@
             <tbody>
                 <% if (customers && customers.length > 0) { %>
                     <% customers.forEach(c => { %>
-                        <tr>
+                        <tr id="row-cust-<%= c.id %>">
                             <td><%= c.stt %></td>
-                            <td><%= c.ngay %></td>
+                            <td><%= c.ngay || '' %></td>
                             <td><strong><%= c.ma_kh %></strong></td>
-                            <td><%= c.mst %></td>
+                            <td><%= c.mst || '' %></td>
                             <td style="text-align: left;"><strong><%= c.ten_kh %></strong></td>
-                            <td><%= c.dai_dien %></td>
-                            <td><%= c.nguoi_lh %></td>
-                            <td style="text-align: left;"><%= c.dia_chi %></td>
-                            <td><%= c.dien_thoai %></td>
-                            <td><%= c.email %></td>
-                            <td><%= c.tai_khoan_nh %></td>
-                            <td><%= c.nv_kd %></td>
-                            <td><%= c.ghi_chu %></td>
-                            <td><%= c.ngan_hang %></td>
-                            <td><strong><%= c.tich_luy %></strong></td>
+                            <td><%= c.dai_dien || '' %></td>
+                            <td><%= c.nguoi_lh || '' %></td>
+                            <td style="text-align: left;"><%= c.dia_chi || '' %></td>
+                            <td><%= c.dien_thoai || '' %></td>
+                            <td><%= c.email || '' %></td>
+                            <td><%= c.tai_khoan_nh || '' %></td>
+                            <td><%= c.nv_kd || '' %></td>
+                            <td><%= c.ghi_chu || '' %></td>
+                            <td><%= c.ngan_hang || '' %></td>
+                            <td><strong><%= c.tich_luy || '0.00' %></strong></td>
                             <td>
                                 <button class="btn-action-edit" onclick="editCustomer('<%= c.id %>')"><i class="fa-solid fa-pen"></i> Sửa</button>
                                 <button class="btn-action-del" onclick="deleteCustomer('<%= c.id %>')"><i class="fa-solid fa-trash-can"></i> Xóa</button>
@@ -70,6 +70,206 @@
             </tbody>
         </table>
     </div>
+
+    <!-- MODAL THÊM / SỬA KHÁCH HÀNG -->
+    <div id="customerModal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm Khách Hàng</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal()">&minus;</button>
+            </div>
+            <form id="customerForm" onsubmit="saveCustomerForm(event)">
+                <input type="hidden" id="customerId" name="id" value="">
+
+                <div class="form-group-grid">
+                    <div class="form-control-item">
+                        <label for="ma_kh">*Mã khách hàng:</label>
+                        <input type="text" id="ma_kh" name="ma_kh" placeholder="VD: KH001, KH002..." required>
+                    </div>
+                    <div class="form-control-item">
+                        <label for="ngay">Ngày đăng ký:</label>
+                        <input type="date" id="ngay" name="ngay">
+                    </div>
+
+                    <div class="form-control-item" style="grid-column: span 2;">
+                        <label for="ten_kh">*Tên khách hàng / Công ty:</label>
+                        <input type="text" id="ten_kh" name="ten_kh" placeholder="VD: Công ty TNHH Xây dựng ABC..." required>
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="mst">Mã số thuế (MST):</label>
+                        <input type="text" id="mst" name="mst" placeholder="0123456789">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="dien_thoai">Số điện thoại:</label>
+                        <input type="text" id="dien_thoai" name="dien_thoai" placeholder="0912345678">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="dai_dien">Người đại diện:</label>
+                        <input type="text" id="dai_dien" name="dai_dien" placeholder="Họ và tên">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="nguoi_lh">Người liên hệ:</label>
+                        <input type="text" id="nguoi_lh" name="nguoi_lh" placeholder="Họ và tên">
+                    </div>
+
+                    <div class="form-control-item" style="grid-column: span 2;">
+                        <label for="dia_chi">Địa chỉ:</label>
+                        <input type="text" id="dia_chi" name="dia_chi" placeholder="Địa chỉ công ty hoặc công trình">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" placeholder="example@gmail.com">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="nv_kd">Nhân viên kinh doanh:</label>
+                        <input type="text" id="nv_kd" name="nv_kd" placeholder="Tên nhân viên">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="tai_khoan_nh">Số tài khoản NH:</label>
+                        <input type="text" id="tai_khoan_nh" name="tai_khoan_nh" placeholder="Số tài khoản">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="ngan_hang">Tên ngân hàng:</label>
+                        <input type="text" id="ngan_hang" name="ngan_hang" placeholder="VD: Vietcombank, ACB...">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="tich_luy">Tích lũy (m³):</label>
+                        <input type="text" id="tich_luy" name="tich_luy" placeholder="0.00">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="ghi_chu">Ghi chú:</label>
+                        <input type="text" id="ghi_chu" name="ghi_chu" placeholder="Ghi chú thêm">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" onclick="closeModal()">Đóng</button>
+                    <button type="submit" class="btn-modal-save"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </main>
+
+<script>
+    const customersData = <%- JSON.stringify(customers || []) %>;
+
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Thêm Khách Hàng';
+        document.getElementById('customerForm').reset();
+        document.getElementById('customerId').value = '';
+        // Set default ngày là hôm nay
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('ngay').value = today;
+        document.getElementById('customerModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('customerModal').classList.remove('show');
+    }
+
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('customerModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    function editCustomer(id) {
+        const found = customersData.find(c => String(c.id) === String(id));
+        if (!found) {
+            alert('Không tìm thấy thông tin khách hàng cần sửa!');
+            return;
+        }
+
+        document.getElementById('modalTitle').textContent = 'Sửa Khách Hàng: ' + (found.ten_kh || found.ma_kh);
+        document.getElementById('customerId').value = found.id || '';
+        document.getElementById('ma_kh').value = found.ma_kh || '';
+        document.getElementById('ngay').value = found.ngay || '';
+        document.getElementById('ten_kh').value = found.ten_kh || '';
+        document.getElementById('mst').value = found.mst || '';
+        document.getElementById('dien_thoai').value = found.dien_thoai || '';
+        document.getElementById('dai_dien').value = found.dai_dien || '';
+        document.getElementById('nguoi_lh').value = found.nguoi_lh || '';
+        document.getElementById('dia_chi').value = found.dia_chi || '';
+        document.getElementById('email').value = found.email || '';
+        document.getElementById('nv_kd').value = found.nv_kd || '';
+        document.getElementById('tai_khoan_nh').value = found.tai_khoan_nh || '';
+        document.getElementById('ngan_hang').value = found.ngan_hang || '';
+        document.getElementById('tich_luy').value = found.tich_luy || '0.00';
+        document.getElementById('ghi_chu').value = found.ghi_chu || '';
+
+        document.getElementById('customerModal').classList.add('show');
+    }
+
+    function saveCustomerForm(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        fetch('/customers/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(payload.id ? 'Cập nhật khách hàng thành công!' : 'Thêm mới khách hàng thành công!');
+                closeModal();
+                location.reload();
+            } else {
+                alert('Lỗi: ' + (data.message || 'Không thể lưu dữ liệu'));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Lỗi kết nối khi lưu thông tin khách hàng!');
+        });
+    }
+
+    function deleteCustomer(id) {
+        if (!confirm('Bạn có chắc chắn muốn xóa khách hàng này không?')) {
+            return;
+        }
+
+        fetch('/customers/delete/' + encodeURIComponent(id), {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Đã xóa khách hàng thành công!');
+                location.reload();
+            } else {
+                alert('Lỗi: ' + (data.message || 'Không thể xóa'));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Lỗi kết nối khi gửi yêu cầu xóa!');
+        });
+    }
+
+    function searchCustomerTable() {
+        const val = document.getElementById('searchInput').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#customerTable tbody tr');
+        rows.forEach(r => {
+            if (r.querySelector('.empty-state')) return;
+            const text = r.innerText.toLowerCase();
+            r.style.display = text.includes(val) ? '' : 'none';
+        });
+    }
+</script>
 
 <%- include('partials/footer') %>

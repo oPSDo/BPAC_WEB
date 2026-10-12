@@ -10,13 +10,13 @@
             <i class="fa-solid fa-plus"></i> Thêm
         </button>
         <div class="search-input-group">
-            <input type="text" placeholder="Tìm tên mác...">
-            <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+            <input type="text" id="searchInput" placeholder="Tìm tên mác..." onkeyup="searchMacTable()">
+            <button onclick="searchMacTable()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
         </div>
     </div>
 
     <div class="table-responsive-box">
-        <table class="custom-data-table">
+        <table class="custom-data-table" id="macTable">
             <thead>
                 <tr>
                     <th>STT</th>
@@ -42,24 +42,24 @@
             <tbody>
                 <% if (macs && macs.length > 0) { %>
                     <% macs.forEach(m => { %>
-                        <tr>
+                        <tr id="row-mac-<%= m.id %>">
                             <td><%= m.stt %></td>
                             <td><strong><%= m.ten_mac %></strong></td>
-                            <td><%= m.cl1 %></td>
-                            <td><%= m.cl2 %></td>
-                            <td><%= m.cl3 %></td>
-                            <td><%= m.cl4 %></td>
-                            <td><%= m.cl5 %></td>
-                            <td><%= m.pg1 %></td>
-                            <td><%= m.pg2 %></td>
-                            <td><%= m.ten_pg1 %></td>
-                            <td><%= m.ten_pg2 %></td>
-                            <td><%= m.ten_cl1 %></td>
-                            <td><%= m.ten_cl2 %></td>
-                            <td><%= m.ten_cl3 %></td>
-                            <td><%= m.ten_cl4 %></td>
-                            <td><%= m.ten_cl5 %></td>
-                            <td><%= m.do_sut %></td>
+                            <td><%= m.cl1 || '' %></td>
+                            <td><%= m.cl2 || '' %></td>
+                            <td><%= m.cl3 || '' %></td>
+                            <td><%= m.cl4 || '' %></td>
+                            <td><%= m.cl5 || '' %></td>
+                            <td><%= m.pg1 || '' %></td>
+                            <td><%= m.pg2 || '' %></td>
+                            <td><%= m.ten_pg1 || '' %></td>
+                            <td><%= m.ten_pg2 || '' %></td>
+                            <td><%= m.ten_cl1 || '' %></td>
+                            <td><%= m.ten_cl2 || '' %></td>
+                            <td><%= m.ten_cl3 || '' %></td>
+                            <td><%= m.ten_cl4 || '' %></td>
+                            <td><%= m.ten_cl5 || '' %></td>
+                            <td><%= m.do_sut || '' %></td>
                             <td>
                                 <button class="btn-action-edit" onclick="editMac('<%= m.id %>')"><i class="fa-solid fa-pen"></i> Sửa</button>
                                 <button class="btn-action-del" onclick="deleteMac('<%= m.id %>')"><i class="fa-solid fa-trash-can"></i> Xóa</button>
@@ -68,12 +68,221 @@
                     <% }) %>
                 <% } else { %>
                     <tr>
-                        <td colspan="27" class="empty-state">Chưa có công thức trộn nào.</td>
+                        <td colspan="18" class="empty-state">Chưa có công thức trộn nào.</td>
                     </tr>
                 <% } %>
             </tbody>
         </table>
     </div>
+
+    <!-- MODAL THÊM / SỬA MAC (CHỈ CỐT LIỆU & PHỤ GIA THEO CHUẨN ASPHALT) -->
+    <div id="macModal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3 id="modalTitle">Thêm MAC</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal()">&minus;</button>
+            </div>
+            <form id="macForm" onsubmit="saveMacForm(event)">
+                <input type="hidden" id="macId" name="id" value="">
+
+                <div class="form-control-item" style="margin-bottom: 14px;">
+                    <label for="ten_mac">*Tên MAC:</label>
+                    <input type="text" id="ten_mac" name="ten_mac" placeholder="Nhập tên mác (VD: MAC01, MAC250...)" required>
+                </div>
+
+                <div class="form-group-grid">
+                    <div class="form-control-item">
+                        <label for="ten_cl1">Tên cốt liệu 1:</label>
+                        <input type="text" id="ten_cl1" name="ten_cl1" placeholder="Cát vàng">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="cl1">Giá trị cốt liệu 1 (Kg):</label>
+                        <input type="text" id="cl1" name="cl1" placeholder="200.00">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="ten_cl2">Tên cốt liệu 2:</label>
+                        <input type="text" id="ten_cl2" name="ten_cl2" placeholder="Cát đen">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="cl2">Giá trị cốt liệu 2 (Kg):</label>
+                        <input type="text" id="cl2" name="cl2" placeholder="200.00">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="ten_cl3">Tên cốt liệu 3:</label>
+                        <input type="text" id="ten_cl3" name="ten_cl3" placeholder="Sỏi">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="cl3">Giá trị cốt liệu 3 (Kg):</label>
+                        <input type="text" id="cl3" name="cl3" placeholder="200.00">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="ten_cl4">Tên cốt liệu 4:</label>
+                        <input type="text" id="ten_cl4" name="ten_cl4" placeholder="Đá 22">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="cl4">Giá trị cốt liệu 4 (Kg):</label>
+                        <input type="text" id="cl4" name="cl4" placeholder="300.00">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="ten_cl5">Tên cốt liệu 5:</label>
+                        <input type="text" id="ten_cl5" name="ten_cl5" placeholder="Đá 21">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="cl5">Giá trị cốt liệu 5 (Kg):</label>
+                        <input type="text" id="cl5" name="cl5" placeholder="300.00">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="ten_pg1">Tên PG1:</label>
+                        <input type="text" id="ten_pg1" name="ten_pg1" placeholder="PGG1">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="pg1">Giá trị phụ gia 1 (Kg):</label>
+                        <input type="text" id="pg1" name="pg1" placeholder="14.60">
+                    </div>
+
+                    <div class="form-control-item">
+                        <label for="ten_pg2">Tên PG2:</label>
+                        <input type="text" id="ten_pg2" name="ten_pg2" placeholder="PGG2">
+                    </div>
+                    <div class="form-control-item">
+                        <label for="pg2">Giá trị phụ gia 2 (Kg):</label>
+                        <input type="text" id="pg2" name="pg2" placeholder="9.90">
+                    </div>
+
+                    <div class="form-control-item" style="grid-column: span 2;">
+                        <label for="do_sut">Độ sụt:</label>
+                        <input type="text" id="do_sut" name="do_sut" placeholder="15.00">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" onclick="closeModal()">Đóng</button>
+                    <button type="submit" class="btn-modal-save"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </main>
+
+<script>
+    const macsData = <%- JSON.stringify(macs || []) %>;
+
+    function openAddModal() {
+        document.getElementById('modalTitle').textContent = 'Thêm MAC';
+        document.getElementById('macForm').reset();
+        document.getElementById('macId').value = '';
+        document.getElementById('macModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('macModal').classList.remove('show');
+    }
+
+    // Đóng khi click ngoài hộp modal
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('macModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    function editMac(id) {
+        const found = macsData.find(m => String(m.id) === String(id));
+        if (!found) {
+            alert('Không tìm thấy thông tin MAC cần sửa!');
+            return;
+        }
+
+        document.getElementById('modalTitle').textContent = 'Sửa MAC: ' + found.ten_mac;
+        document.getElementById('macId').value = found.id || '';
+        document.getElementById('ten_mac').value = found.ten_mac || '';
+        document.getElementById('ten_cl1').value = found.ten_cl1 || '';
+        document.getElementById('cl1').value = found.cl1 || '';
+        document.getElementById('ten_cl2').value = found.ten_cl2 || '';
+        document.getElementById('cl2').value = found.cl2 || '';
+        document.getElementById('ten_cl3').value = found.ten_cl3 || '';
+        document.getElementById('cl3').value = found.cl3 || '';
+        document.getElementById('ten_cl4').value = found.ten_cl4 || '';
+        document.getElementById('cl4').value = found.cl4 || '';
+        document.getElementById('ten_cl5').value = found.ten_cl5 || '';
+        document.getElementById('cl5').value = found.cl5 || '';
+        document.getElementById('ten_pg1').value = found.ten_pg1 || '';
+        document.getElementById('pg1').value = found.pg1 || '';
+        document.getElementById('ten_pg2').value = found.ten_pg2 || '';
+        document.getElementById('pg2').value = found.pg2 || '';
+        document.getElementById('do_sut').value = found.do_sut || '';
+
+        document.getElementById('macModal').classList.add('show');
+    }
+
+    function saveMacForm(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        fetch('/macs/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert(payload.id ? 'Cập nhật MAC thành công!' : 'Thêm mới MAC thành công!');
+                closeModal();
+                location.reload();
+            } else {
+                alert('Lỗi: ' + (data.message || 'Không thể lưu dữ liệu'));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Lỗi kết nối khi lưu công thức trộn!');
+        });
+    }
+
+    function deleteMac(id) {
+        if (!confirm('Bạn có chắc chắn muốn xóa công thức trộn này không?')) {
+            return;
+        }
+
+        fetch('/macs/delete/' + encodeURIComponent(id), {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Đã xóa công thức trộn thành công!');
+                location.reload();
+            } else {
+                alert('Lỗi: ' + (data.message || 'Không thể xóa'));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Lỗi kết nối khi gửi yêu cầu xóa!');
+        });
+    }
+
+    function searchMacTable() {
+        const val = document.getElementById('searchInput').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#macTable tbody tr');
+        rows.forEach(r => {
+            if (r.querySelector('.empty-state')) return;
+            const text = r.innerText.toLowerCase();
+            r.style.display = text.includes(val) ? '' : 'none';
+        });
+    }
+</script>
 
 <%- include('partials/footer') %>

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "ma_lx": 1,
+    "ten_lai_xe": "Lê Việt Anh",
+    "bien_so_xe": "89A-304.63",
+    "dien_thoai": "1234566789",
+    "thong_tin": "Đội xe GHT"
+  },
+  {
+    "id": "2",
+    "ma_lx": 2,
+    "ten_lai_xe": "Phạm Thế Thảo",
+    "bien_so_xe": "89A-095.14",
+    "dien_thoai": "998899899",
+    "thong_tin": "Đội xe sửa chữa"
+  },
+  {
+    "id": "3",
+    "ma_lx": 3,
+    "ten_lai_xe": "Phạm Thế Thảo",
+    "bien_so_xe": "89A-095.14",
+    "dien_thoai": "123456",
+    "thong_tin": "Đội xe sửa chữa"
+  },
+  {
+    "id": "4",
+    "ma_lx": 4,
+    "ten_lai_xe": "Phạm Thế Thảo",
+    "bien_so_xe": "89A-095.14",
+    "dien_thoai": "55555555",
+    "thong_tin": "Đội xe sửa chữa"
+  },
+  {
+    "id": "6",
+    "ma_lx": 6,
+    "ten_lai_xe": "Lê Tèo",
+    "bien_so_xe": "89A-304.63",
+    "dien_thoai": "0912345678",
+    "thong_tin": "Đội xe GHT"
+  },
+  {
+    "id": "7",
+    "ma_lx": 7,
+    "ten_lai_xe": "Lê Tí",
+    "bien_so_xe": "89A-304.63",
+    "dien_thoai": "475845454",
+    "thong_tin": "Đội xe GHT"
+  }
+]

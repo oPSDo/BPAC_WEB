@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    STYLE CHUẨN GIAO DIỆN HỆ THỐNG TRẠM TRỘN BÊ TÔNG ENQ1
    ========================================================= */
 
@@ -718,6 +718,42 @@ body {
     justify-content: flex-end;
     gap: 10px;
     margin-top: 20px;
+}
+
+.btn-modal-cancel {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-modal-cancel:hover {
+    background-color: #e2e6ea;
+    color: #212529;
+}
+
+.btn-modal-save {
+    background-color: #28a745;
+    border: 1px solid #28a745;
+    color: #ffffff;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn-modal-save:hover {
+    background-color: #218838;
 }
 
 /* RESPONSIVE */
