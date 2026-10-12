@@ -1,44 +1,44 @@
 @echo off
 chcp 65001 >nul
+title TRINH BIEN DICH BPAC - ENQ
+cd /d "%~dp0"
 echo ============================================================
-echo   TRÌNH BIÊN DỊCH MÃ NGUỒN C# BPAC VÀ AUTOUPDATE (ENQ)
+echo   TRINH BIEN DICH MA NGUON C# BPAC VA AUTOUPDATE (ENQ)
 echo ============================================================
 echo.
 
 set CSC=C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe
+if not exist "%CSC%" set CSC=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
 
 if not exist "%CSC%" (
-    set CSC=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe
-)
-
-if not exist "%CSC%" (
-    echo [LỖI] Không tìm thấy trình biên dịch csc.exe của Windows .NET Framework!
+    echo [LOI] Khong tim thay trinh bien dich csc.exe cua Windows .NET Framework!
     pause
     exit /b 1
 )
 
-echo [1/2] Đang biên dịch BPAC.exe từ BPAC_Launcher.cs...
+echo [1/2] Dang bien dich BPAC.exe tu BPAC_Launcher.cs...
 "%CSC%" /target:winexe /optimize+ /out:..\BPAC.exe BPAC_Launcher.cs
 if %errorlevel% neq 0 (
-    echo [LỖI] Biên dịch BPAC.exe thất bại!
+    echo [LOI] Bien dich BPAC.exe that bai!
     pause
     exit /b 1
 )
-echo      -> Đã tạo thành công: BPAC_PC\BPAC.exe
+echo      -^> Da tao thanh cong: BPAC_PC\BPAC.exe
+echo.
 
-echo [2/2] Đang biên dịch autoupdate.exe từ AutoUpdateService.cs...
+echo [2/2] Dang bien dich autoupdate.exe tu AutoUpdateService.cs...
 "%CSC%" /target:winexe /optimize+ /out:..\autoupdate.exe AutoUpdateService.cs
 if %errorlevel% neq 0 (
-    echo [LỖI] Biên dịch autoupdate.exe thất bại!
+    echo [LOI] Bien dich autoupdate.exe that bai!
     pause
     exit /b 1
 )
-echo      -> Đã tạo thành công: BPAC_PC\autoupdate.exe
-
+echo      -^> Da tao thanh cong: BPAC_PC\autoupdate.exe
 echo.
+
 echo ============================================================
-echo   BIÊN DỊCH HOÀN TẤT THÀNH CÔNG 100%!
-echo   Các file .exe đã được xuất tại thư mục: BPAC_PC\
+echo   BIEN DICH HOAN TAT THANH CONG 100%!
+echo   Cac file .exe da duoc xuat tai thu muc: BPAC_PC\
 echo ============================================================
 echo.
 pause
