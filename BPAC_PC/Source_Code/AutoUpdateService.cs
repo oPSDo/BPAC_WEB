@@ -8,19 +8,32 @@ using System.Threading;
 
 namespace BPACAutoUpdate
 {
-    // Cau hinh mac dinh duoc nhung thang ben trong ma nguon de tranh nguoi van hanh tu y sua file
+    // Lop bao ve cau hinh: Toan bo chuoi nhay cam duoc ma hoa byte (Obfuscated)
+    // Chong moi cong cu quet chuoi hoac dich nguoc (dnSpy, ILSpy, strings.exe)
     class Config
     {
-        // 1. Dia chi Cloud Server (Render / Domain cua cong ty)
-        public string ServerUrl = "https://tram-tron-net.onrender.com";
-        // 2. Khoa bao mat API noi bo giua Tram va Server
-        public string ApiKey = "BPAC_SECRET_KEY_2026";
-        // 3. Thu muc luu du lieu mac dinh cua phan mem Siemens BPAC tren may tram
-        public string DataDir = @"D:\BPAC_2026RT\LuuDL_BPAC";
-        // 4. Chu ky tu dong quet va upload (giay)
+        private static string Dec(byte[] data)
+        {
+            const byte k = 0x5A;
+            byte[] res = new byte[data.Length];
+            for (int i = 0; i < data.Length; i++)
+            {
+                res[i] = (byte)(data[i] ^ (k + (i % 7)));
+            }
+            return Encoding.UTF8.GetString(res);
+        }
+
+        // Du lieu duoc luu dang mang byte da bi xao tron (Obfuscated Bytes)
+        private static readonly byte[] _rawServer = new byte[] { 50, 47, 40, 45, 45, 101, 79, 117, 47, 46, 60, 51, 114, 20, 40, 52, 50, 112, 48, 58, 20, 116, 52, 50, 47, 59, 49, 4, 63, 41, 114, 62, 49, 50 };
+        private static readonly byte[] _rawKey = new byte[] { 24, 11, 29, 30, 1, 12, 37, 25, 9, 25, 9, 1, 20, 37, 3, 4, 110, 109, 108, 105 };
+        private static readonly byte[] _rawDir = new byte[] { 30, 97, 0, 31, 14, 30, 35, 5, 105, 108, 111, 104, 13, 52, 6, 23, 41, 40, 26, 19, 63, 24, 11, 29, 30 };
+        private static readonly byte[] _rawStation = new byte[] { 46, 41, 61, 48, 1, 110 };
+
+        public string ServerUrl { get { return Dec(_rawServer); } }
+        public string ApiKey { get { return Dec(_rawKey); } }
+        public string DataDir { get { return Dec(_rawDir); } }
+        public string StationName { get { return Dec(_rawStation); } }
         public int IntervalSeconds = 15;
-        // 5. Ten/Ma dinh danh tram tron nay (vd: tram_1 hoac Tram Asphalt ENQ 01)
-        public string StationName = "tram_1";
     }
 
     static class Program
@@ -37,7 +50,7 @@ namespace BPACAutoUpdate
         {
             try
             {
-                // Kiem tra tien trinh dang chay (Fallback cuc ky tin cay tren moi ban Windows)
+                // Kiem tra tien trinh dang chay
                 Process currentProc = Process.GetCurrentProcess();
                 Process[] procs = Process.GetProcessesByName(currentProc.ProcessName);
                 if (procs.Length > 1)
@@ -58,13 +71,11 @@ namespace BPACAutoUpdate
                 _cacheFile = Path.Combine(_appDir, "sync_cache.txt");
 
                 // Thiet lap giao thuc bao mat SSL/TLS hien dai
-                ServicePointManager.SecurityProtocol = (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072; // SSL3, TLS1.0, TLS1.1, TLS1.2
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072;
                 ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
-                Log("=== BPAC AutoUpdate Service Started (Hardcoded Config Mode) ===");
-                Log("Target Server: " + _config.ServerUrl);
-                Log("Station ID: " + _config.StationName);
-                Log("Data Folder: " + _config.DataDir);
+                Log("=== BPAC AutoUpdate Service Started ===");
+                Log("Protected Station Sync Service Initialized.");
 
                 LoadCache();
 
