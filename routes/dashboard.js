@@ -127,7 +127,7 @@ router.get('/home', requireLogin, (req, res) => {
     const timeStr = liveData.lastUpdated || now.toTimeString().split(' ')[0];
 
     res.render('home', {
-        title: 'Báo cáo sản xuất trong ngày - Trạm trộn FUTA01',
+        title: 'Báo cáo sản xuất trong ngày - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/home',
         currentTime: timeStr,
         stats: liveData.stats,
@@ -139,7 +139,7 @@ router.get('/home', requireLogin, (req, res) => {
 // TRANG CÔNG THỨC TRỘN (/macs)
 router.get('/macs', requireLogin, (req, res) => {
     res.render('macs', {
-        title: 'Công thức trộn - Trạm trộn FUTA01',
+        title: 'Công thức trộn - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/macs',
         kpi: KPI_DEFAULT,
         macs: MACS_DEFAULT
@@ -149,7 +149,7 @@ router.get('/macs', requireLogin, (req, res) => {
 // TRANG THÔNG TIN KHÁCH HÀNG (/customers)
 router.get('/customers', requireLogin, (req, res) => {
     res.render('customers', {
-        title: 'Thông tin khách hàng - Trạm trộn FUTA01',
+        title: 'Thông tin khách hàng - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/customers',
         kpi: KPI_DEFAULT,
         customers: CUSTOMERS_DEFAULT
@@ -159,7 +159,7 @@ router.get('/customers', requireLogin, (req, res) => {
 // TRANG THÔNG TIN XE (/vehicles)
 router.get('/vehicles', requireLogin, (req, res) => {
     res.render('vehicles', {
-        title: 'Thông tin xe - Trạm trộn FUTA01',
+        title: 'Thông tin xe - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/vehicles',
         kpi: KPI_DEFAULT,
         vehicles: VEHICLES_DEFAULT
@@ -169,7 +169,7 @@ router.get('/vehicles', requireLogin, (req, res) => {
 // DỮ LIỆU THEO KHÁCH HÀNG
 router.get('/customer-data', requireLogin, (req, res) => {
     res.render('report_view', {
-        title: 'Dữ liệu theo khách hàng - Trạm trộn FUTA01',
+        title: 'Dữ liệu theo khách hàng - Trạm Trộn Asphalt ENQ 01',
         pageTitle: 'DỮ LIỆU THEO KHÁCH HÀNG',
         currentPath: '/customer-data',
         kpi: KPI_DEFAULT
@@ -179,7 +179,7 @@ router.get('/customer-data', requireLogin, (req, res) => {
 // DỮ LIỆU THEO XE
 router.get('/vehicle-data', requireLogin, (req, res) => {
     res.render('report_view', {
-        title: 'Dữ liệu theo xe - Trạm trộn FUTA01',
+        title: 'Dữ liệu theo xe - Trạm Trộn Asphalt ENQ 01',
         pageTitle: 'DỮ LIỆU THEO XE',
         currentPath: '/vehicle-data',
         kpi: KPI_DEFAULT
@@ -189,7 +189,7 @@ router.get('/vehicle-data', requireLogin, (req, res) => {
 // BÁO CÁO THEO PHIẾU
 router.get('/reports', requireLogin, (req, res) => {
     res.render('report_view', {
-        title: 'Báo cáo theo phiếu - Trạm trộn FUTA01',
+        title: 'Báo cáo theo phiếu - Trạm Trộn Asphalt ENQ 01',
         pageTitle: 'BÁO CÁO THEO PHIẾU',
         currentPath: '/reports',
         kpi: KPI_DEFAULT
@@ -199,7 +199,7 @@ router.get('/reports', requireLogin, (req, res) => {
 // NGƯỜI DÙNG
 router.get('/users', requireLogin, (req, res) => {
     res.render('users', {
-        title: 'Quản lý người dùng - Trạm trộn FUTA01',
+        title: 'Quản lý người dùng - Trạm Trộn Asphalt ENQ 01',
         currentPath: '/users',
         kpi: KPI_DEFAULT
     });
