@@ -10,7 +10,7 @@
       "id": "SPX002_1791716141753",
       "spx": "SPX002",
       "ma_kh": "KH002",
-      "ten_kh": "Khách hàng Trạm FUTA",
+      "ten_kh": "Khách hàng Trạm ENQ",
       "thoi_gian": "Thứ năm, 08/10/2026 10:24:22",
       "mac": "MAC250",
       "m3xe": "9.3",
@@ -30,7 +30,7 @@
   ],
   "topCustomers": [
     {
-      "name": "Khách hàng Trạm FUTA",
+      "name": "Khách hàng Trạm ENQ",
       "m3": "9,3"
     }
   ],
