@@ -1,7 +1,0 @@
-{
-  "StationName": "Trạm Trộn Asphalt ENQ 01",
-  "DataDir": "D:\\BPAC_2026RT\\LuuDL_BPAC",
-  "IntervalSeconds": 15,
-  "ServerUrl": "https://tram-tron-net.onrender.com",
-  "ApiKey": "BPAC_SECRET_KEY_2026"
-}
