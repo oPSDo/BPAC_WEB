@@ -13,12 +13,15 @@
 
    A) BPAC.exe (BPAC_Launcher.cs):
       - Đóng vai trò là file chạy chính trên Desktop của trạm trộn.
+      - TÍCH HỢP CƠ CHẾ TỰ HỒI SINH (SELF-HEALING):
+        Toàn bộ file nhị phân `autoupdate.exe` đã được nhúng kín bên trong tài nguyên (Embedded Resource)
+        của `BPAC.exe`. Nếu người vận hành hoặc virus xóa mất file `autoupdate.exe`, ngay khi bấm
+        mở `BPAC.exe`, chương trình sẽ tự động phát hiện và trích xuất tái tạo lại file `autoupdate.exe`
+        nguyên vẹn ngay lập tức, đồng thời đặt thuộc tính Ẩn (Hidden) để người dùng không nhìn thấy.
       - Khi người vận hành bấm mở "BPAC.exe":
-        1. Chương trình kiểm tra và tự động khởi động "autoupdate.exe" ở chế độ chạy ngầm
-           (Hidden - không hiện cửa sổ dòng lệnh để tránh người dùng tắt nhầm).
-        2. Đồng thời mở dự án SCADA trạm trộn Siemens WinCC Runtime ("pdata.fwc").
-      - Nhờ đó, người vận hành trạm chỉ cần mở 1 biểu tượng duy nhất, hệ thống tự động
-        chạy cả SCADA trộn và dịch vụ đồng bộ lên Web.
+        1. Kiểm tra / Tự động phục hồi `autoupdate.exe`.
+        2. Tự động khởi chạy ngầm `autoupdate.exe` (Hidden - không hiện cửa sổ console).
+        3. Khởi chạy giao diện điều khiển trạm Siemens WinCC Runtime (`pdata.fwc`).
 
    B) autoupdate.exe (AutoUpdateService.cs):
       - Chạy ngầm trong hệ thống, chống chạy trùng lặp qua Mutex.
